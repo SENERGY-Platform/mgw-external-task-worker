@@ -1,0 +1,21 @@
+{
+    "completion_strategy":"",
+    "camunda_topic":"",
+    "auth_endpoint":"",
+    "auth_client_id":"",
+    "auth_user_name":"",
+    "auth_password":"",
+    "camunda_url":"",
+    "mqtt_broker":"",
+    "debug":false,
+    "optimistic_task_completion_timeout": 100,
+    "camunda_worker_timeout":1000,
+    "camunda_worker_tasks":10,
+    "camunda_fetch_lock_duration":60000,
+    "camunda_task_result_name":"result",
+    "auth_expiration_time_buffer":2,
+    "sub_result_expiration_in_seconds":6000,
+    "sequential_groups":false,
+    "mqtt_response_topic": "response/#",
+    "correlation_id_prefix": "pessimistic-local-task-"
+}
