@@ -20,6 +20,7 @@ import (
 	"context"
 	"github.com/SENERGY-Platform/external-task-worker/lib"
 	"github.com/SENERGY-Platform/external-task-worker/util"
+	"log"
 	"mgw-process-task-worker/pkg/camunda"
 	"mgw-process-task-worker/pkg/configuration"
 	"mgw-process-task-worker/pkg/devicerepo"
@@ -28,6 +29,12 @@ import (
 )
 
 func Start(ctx context.Context, config configuration.Config) {
+	fallback, err := devicerepo.NewFallback(config.FallbackFile)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	cache := devicerepo.NewCache(fallback)
 	lib.Worker(
 		ctx,
 		util.Config{
@@ -47,7 +54,7 @@ func Start(ctx context.Context, config configuration.Config) {
 			SequentialGroups:                config.SequentialGroups,
 		},
 		messaging.Factory{Config: config, Correlation: messaging.DefaultCorrelation},
-		devicerepo.Factory{Config: config},
+		devicerepo.Factory{Config: config, Cache: cache},
 		camunda.Factory{Config: config},
 		marshaller.Factory{Config: config},
 	)

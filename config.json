@@ -7,6 +7,7 @@
     "auth_password":"",
     "camunda_url":"",
     "mqtt_broker":"",
+    "device_repo_url": "",
     "debug":false,
     "optimistic_task_completion_timeout": 100,
     "camunda_worker_timeout":1000,
@@ -17,5 +18,6 @@
     "sub_result_expiration_in_seconds":6000,
     "sequential_groups":false,
     "mqtt_response_topic": "response/#",
-    "correlation_id_prefix": "pessimistic-local-task-"
+    "correlation_id_prefix": "pessimistic-local-task-",
+    "fallback_file": "devicerepo_fallback.json"
 }

@@ -50,6 +50,8 @@ type Config struct {
 	MqttBroker          string `json:"mqtt_broker"`
 	MqttResponseTopic   string `json:"mqtt_response_topic"`
 	CorrelationIdPrefix string `json:"correlation_id_prefix"`
+	DeviceRepoUrl       string `json:"device_repo_url"`
+	FallbackFile        string `json:"fallback_file"`
 }
 
 //loads config from json in location and used environment variables (e.g ZookeeperUrl --> ZOOKEEPER_URL)
