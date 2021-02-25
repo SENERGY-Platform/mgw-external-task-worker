@@ -18,6 +18,7 @@ package messaging
 
 import (
 	"github.com/SENERGY-Platform/external-task-worker/lib/kafka"
+	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
 	"github.com/SENERGY-Platform/external-task-worker/util"
 	"mgw-process-task-worker/pkg/configuration"
 )
@@ -25,24 +26,29 @@ import (
 type Factory struct {
 	Config      configuration.Config
 	Correlation Correlation
+	Incidents   Incidents
+}
+
+type Incidents interface {
+	Handle(command messages.KafkaIncidentsCommand) error
 }
 
 func (this Factory) NewConsumer(_ util.Config, listener func(msg string) error) (consumer kafka.ConsumerInterface, err error) {
-	return this.newConsumer(this.Config, listener)
+	return this.newConsumer(listener)
 }
 
 func (this Factory) NewProducer(_ util.Config) (kafka.ProducerInterface, error) {
-	return this.newProducer(this.Config)
+	return this.newProducer()
 }
 
-func (this Factory) newConsumer(config configuration.Config, listener func(msg string) error) (kafka.ConsumerInterface, error) {
-	result := &Consumer{config: config, listener: listener, correlation: this.Correlation}
+func (this Factory) newConsumer(listener func(msg string) error) (kafka.ConsumerInterface, error) {
+	result := &Consumer{config: this.Config, listener: listener, correlation: this.Correlation}
 	err := result.start()
 	return result, err
 }
 
-func (this Factory) newProducer(config configuration.Config) (kafka.ProducerInterface, error) {
-	result := &Producer{config: config, correlation: this.Correlation}
+func (this Factory) newProducer() (kafka.ProducerInterface, error) {
+	result := &Producer{config: this.Config, correlation: this.Correlation, incidents: this.Incidents}
 	err := result.start()
 	return result, err
 }

@@ -52,6 +52,10 @@ type Config struct {
 	CorrelationIdPrefix string `json:"correlation_id_prefix"`
 	DeviceRepoUrl       string `json:"device_repo_url"`
 	FallbackFile        string `json:"fallback_file"`
+
+	SyncConnectRetryInterval string `json:"sync_connect_retry_interval"`
+	SyncNetworkId            string `json:"network_id"`
+	SyncMqttBroker           string `json:"sync_mqtt_broker"`
 }
 
 //loads config from json in location and used environment variables (e.g ZookeeperUrl --> ZOOKEEPER_URL)

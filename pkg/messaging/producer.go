@@ -30,6 +30,7 @@ import (
 type Producer struct {
 	config      configuration.Config
 	correlation Correlation
+	incidents   Incidents
 	mqtt        paho.Client
 }
 
@@ -40,7 +41,7 @@ func (this *Producer) start() error {
 		AddBroker(this.config.MqttBroker).
 		SetResumeSubs(true).
 		SetConnectionLostHandler(func(_ paho.Client, err error) {
-			log.Println("producer to mqtt broker lost")
+			log.Println("producer to mqtt broker lost connection")
 		}).
 		SetOnConnectHandler(func(m paho.Client) {
 			log.Println("producer connected to mqtt broker")
@@ -64,7 +65,11 @@ func (this *Producer) Produce(topic string, message string) (err error) {
 		if !token.WaitTimeout(10 * time.Second) {
 			return errors.New("publish timeout")
 		}
-		return token.Error()
+		err = token.Error()
+		if err != nil {
+			log.Println("ERROR: unable to publish on mgw-mqtt:", err)
+		}
+		return err
 	}
 	return nil
 }
@@ -92,13 +97,19 @@ func (this *Producer) convert(topic string, message string) (resultTopic string,
 		return this.convertProtocolMessage(message)
 	default:
 		log.Println("WARNING: usage of unsupported topic/protocol", topic)
-		return //scip mqtt produce because resultTopic remains ""
+		return //skip mqtt produce because resultTopic remains ""
 	}
 }
 
 func (this *Producer) handleIncident(message string) (mqttTopic string, mqttMessage []byte, err error) {
-	//TODO
-	panic("not implemented")
+	incidentCommand := messages.KafkaIncidentsCommand{}
+	err = json.Unmarshal([]byte(message), &incidentCommand)
+	if err != nil {
+		return mqttTopic, mqttMessage, err
+	}
+	err = this.incidents.Handle(incidentCommand)
+	// skip mqtt produce because resultTopic remains ""
+	return
 }
 
 func (this *Producer) convertProtocolMessage(message string) (mqttTopic string, mqttMessage []byte, err error) {
