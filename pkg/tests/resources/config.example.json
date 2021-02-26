@@ -1,13 +1,13 @@
 {
-    "completion_strategy":"",
-    "camunda_topic":"",
-    "auth_endpoint":"",
+    "completion_strategy":"pessimistic",
+    "camunda_topic":"pessimistic",
+    "auth_endpoint":"http://fgseitsrancher.wifa.intern.uni-leipzig.de:8087",
     "auth_client_id":"client-connector-lib",
     "auth_user_name":"",
     "auth_password":"",
     "camunda_url":"",
     "mqtt_broker":"",
-    "device_repo_url": "",
+    "device_repo_url": "http://fgseitsrancher.wifa.intern.uni-leipzig.de:8000/device-manager",
     "network_id": "",
     "sync_mqtt_broker": "",
     "debug":false,
@@ -22,5 +22,5 @@
     "sequential_groups":false,
     "mqtt_response_topic": "response/#",
     "correlation_id_prefix": "pessimistic-local-task-",
-    "fallback_file": "devicerepo_fallback.json"
+    "fallback_file": "/tmp/devicerepo_fallback.json"
 }

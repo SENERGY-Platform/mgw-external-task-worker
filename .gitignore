@@ -1,3 +1,4 @@
 .idea/
 mgw-process-task-worker
 mgw-external-task-worker
+pkg/tests/resources/config.json
