@@ -23,7 +23,7 @@ import (
 	paho "github.com/eclipse/paho.mqtt.golang"
 	uuid "github.com/satori/go.uuid"
 	"log"
-	"mgw-process-task-worker/pkg/configuration"
+	"mgw-external-task-worker/pkg/configuration"
 	"time"
 )
 

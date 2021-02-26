@@ -21,7 +21,7 @@ import (
 	"github.com/SENERGY-Platform/external-task-worker/lib/camunda/interfaces"
 	"github.com/SENERGY-Platform/external-task-worker/lib/kafka"
 	"github.com/SENERGY-Platform/external-task-worker/util"
-	"mgw-process-task-worker/pkg/configuration"
+	"mgw-external-task-worker/pkg/configuration"
 )
 
 type Factory struct {

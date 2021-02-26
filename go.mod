@@ -1,4 +1,4 @@
-module mgw-process-task-worker
+module mgw-external-task-worker
 
 go 1.16
 

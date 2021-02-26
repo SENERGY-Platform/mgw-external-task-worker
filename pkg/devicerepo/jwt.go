@@ -20,7 +20,7 @@ import (
 	"encoding/json"
 	"errors"
 	"log"
-	"mgw-process-task-worker/pkg/configuration"
+	"mgw-external-task-worker/pkg/configuration"
 	"net/http"
 	"time"
 

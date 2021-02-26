@@ -23,7 +23,7 @@ import (
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository/model"
 	"github.com/SENERGY-Platform/external-task-worker/util"
 	"log"
-	"mgw-process-task-worker/pkg/configuration"
+	"mgw-external-task-worker/pkg/configuration"
 	"net/http"
 	"net/url"
 	"time"

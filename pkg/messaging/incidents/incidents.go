@@ -20,7 +20,7 @@ import (
 	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
 	paho "github.com/eclipse/paho.mqtt.golang"
 	"log"
-	"mgw-process-task-worker/pkg/configuration"
+	"mgw-external-task-worker/pkg/configuration"
 	"time"
 )
 

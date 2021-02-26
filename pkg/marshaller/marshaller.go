@@ -23,7 +23,7 @@ import (
 	marshaller_service_configurables "github.com/SENERGY-Platform/marshaller/lib/configurables"
 	marshaller_service "github.com/SENERGY-Platform/marshaller/lib/marshaller"
 	marshaller_service_model "github.com/SENERGY-Platform/marshaller/lib/marshaller/model"
-	"mgw-process-task-worker/pkg/configuration"
+	"mgw-external-task-worker/pkg/configuration"
 )
 
 type Factory struct {
