@@ -38,7 +38,7 @@ import (
 	"time"
 )
 
-func TestWorker(t *testing.T) {
+func TestGroup(t *testing.T) {
 	t.Log("error messages like \n\tERROR: getOpenidToken::PostForm() Post \"/auth/realms/master/protocol/openid-connect/token\": unsupported protocol scheme \"\" \nare expected in this test")
 	wg := sync.WaitGroup{}
 	defer wg.Wait()
@@ -82,6 +82,27 @@ func TestWorker(t *testing.T) {
 		return
 	}
 
+	err = repo.RegisterDevice(model.Device{
+		Id:           "device_2",
+		Name:         "d2",
+		DeviceTypeId: "dt1",
+		LocalId:      "d1u",
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	err = repo.RegisterDeviceGroup(model.DeviceGroup{
+		Id:        "dg_1",
+		Name:      "dg1",
+		DeviceIds: []string{"device_1", "device_2"},
+	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
 	err = repo.RegisterProtocol(model.Protocol{
 		Id:               "p1",
 		Name:             "protocol1",
@@ -99,10 +120,12 @@ func TestWorker(t *testing.T) {
 		Id: "dt1",
 		Services: []model.Service{
 			{
-				Id:         "service_1",
-				Name:       "s1",
-				LocalId:    "s1u",
-				ProtocolId: "p1",
+				Id:          "service_1",
+				Name:        "s1",
+				LocalId:     "s1u",
+				ProtocolId:  "p1",
+				AspectIds:   []string{"color"},
+				FunctionIds: []string{model.MEASURING_FUNCTION_PREFIX + ":test-function"},
 				Outputs: []model.Content{
 					{
 						Id: "metrics",
@@ -133,29 +156,15 @@ func TestWorker(t *testing.T) {
 
 	cmd1 := messages.Command{
 		Version:          2,
-		Function:         model.Function{RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION},
+		Function:         model.Function{RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION, Id: model.MEASURING_FUNCTION_PREFIX + ":test-function"},
 		CharacteristicId: example.Rgb,
-		DeviceId:         "device_1",
-		ServiceId:        "service_1",
-		ProtocolId:       "p1",
+		DeviceGroupId:    "dg_1",
+		Aspect: &model.Aspect{
+			Id: "color",
+		},
 	}
 
 	cmdMsg1, err := json.Marshal(cmd1)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-
-	cmd2 := messages.Command{
-		Version:          2,
-		Function:         model.Function{RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION},
-		CharacteristicId: example.Hex,
-		DeviceId:         "device_1",
-		ServiceId:        "service_1",
-		ProtocolId:       "p1",
-	}
-
-	cmdMsg2, err := json.Marshal(cmd2)
 	if err != nil {
 		t.Error(err)
 		return
@@ -168,14 +177,6 @@ func TestWorker(t *testing.T) {
 				Variables: map[string]messages.CamundaVariable{
 					util.CAMUNDA_VARIABLES_PAYLOAD: {
 						Value: string(cmdMsg1),
-					},
-				},
-			},
-			{
-				Id: "test-task-id-2",
-				Variables: map[string]messages.CamundaVariable{
-					util.CAMUNDA_VARIABLES_PAYLOAD: {
-						Value: string(cmdMsg2),
 					},
 				},
 			},
@@ -206,9 +207,27 @@ func TestWorker(t *testing.T) {
 	mgwMessages := map[string][]string{}
 	mgwmux := sync.Mutex{}
 	token := mgwMqtt.Subscribe("#", 2, func(client paho.Client, message paho.Message) {
-		mgwmux.Lock()
-		defer mgwmux.Unlock()
-		mgwMessages[message.Topic()] = append(mgwMessages[message.Topic()], string(message.Payload()))
+		topic := message.Topic()
+		payload := message.Payload()
+		go func() {
+			mgwmux.Lock()
+			defer mgwmux.Unlock()
+			mgwMessages[topic] = append(mgwMessages[topic], string(payload))
+			if strings.HasPrefix(topic, "command") {
+				msg := messaging.Command{}
+				err = json.Unmarshal([]byte(payload), &msg)
+				if err != nil {
+					log.Fatal(err)
+				}
+				msg.Data = "{\"level\":\"#c83200\"}"
+				resp, err := json.Marshal(msg)
+				if err != nil {
+					log.Fatal(err)
+				}
+				respTopic := strings.Replace(topic, "command", "response", 1)
+				mgwMqtt.Publish(respTopic, 2, false, resp)
+			}
+		}()
 	})
 	if token.Wait() && token.Error() != nil {
 		t.Error(token.Error())
@@ -248,30 +267,7 @@ func TestWorker(t *testing.T) {
 
 	go pkg.Start(ctx, config)
 
-	time.Sleep(1 * time.Second)
-
-	mgwmux.Lock()
-	for topic, messages := range mgwMessages {
-		if strings.HasPrefix(topic, "command") {
-			for _, msgStr := range messages {
-				msg := messaging.Command{}
-				err = json.Unmarshal([]byte(msgStr), &msg)
-				if err != nil {
-					log.Fatal(err)
-				}
-				msg.Data = "{\"level\":\"#c83200\"}"
-				resp, err := json.Marshal(msg)
-				if err != nil {
-					log.Fatal(err)
-				}
-				respTopic := strings.Replace(topic, "command", "response", 1)
-				mgwMqtt.Publish(respTopic, 2, false, resp)
-			}
-		}
-	}
-	mgwmux.Unlock()
-
-	time.Sleep(1 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	t.Log(mgwMessages)
 	t.Log(syncMessages)
@@ -308,17 +304,12 @@ func TestWorker(t *testing.T) {
 								"g": float64(50),
 								"b": float64(0),
 							},
+							map[string]interface{}{
+								"r": float64(200),
+								"g": float64(50),
+								"b": float64(0),
+							},
 						},
-					},
-				},
-			},
-		},
-		"/engine-rest/external-task/test-task-id-2/complete": {
-			map[string]interface{}{
-				"workerId": "worker-id",
-				"localVariables": map[string]interface{}{
-					"result": map[string]interface{}{
-						"value": []interface{}{"#c83200"},
 					},
 				},
 			},

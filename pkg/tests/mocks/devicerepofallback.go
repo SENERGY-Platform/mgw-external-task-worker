@@ -57,3 +57,7 @@ func (this *Repo) RegisterProtocol(protocol model.Protocol) (err error) {
 func (this *Repo) RegisterDeviceType(deviceType model.DeviceType) (err error) {
 	return this.fallback.Set("deviceType."+deviceType.Id, deviceType)
 }
+
+func (this *Repo) RegisterDeviceGroup(group model.DeviceGroup) error {
+	return this.fallback.Set("deviceGroup."+group.Id, group)
+}
