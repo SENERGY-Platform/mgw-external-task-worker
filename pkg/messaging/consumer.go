@@ -96,7 +96,7 @@ func (this *Consumer) convertMessage(msg Command) (string, error) {
 	if target.Response.Output == nil {
 		target.Response.Output = map[string]string{}
 	}
-	target.Response.Output[StandardProtocolPayloadMessageSegment] = msg.Data
+	target.Response.Output[this.config.ProtocolSegment] = msg.Data
 	temp, err := json.Marshal(target)
 	return string(temp), err
 }

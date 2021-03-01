@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package messaging
+package configuration
 
-type Command struct {
-	CommandId string `json:"command_id"`
-	Data      string `json:"data"`
+import uuid "github.com/satori/go.uuid"
+
+var DefaultIdProvider = DefaultIdProviderImpl
+
+func DefaultIdProviderImpl() string {
+	return uuid.NewV4().String()
 }

@@ -19,8 +19,10 @@
     "camunda_task_result_name":"result",
     "auth_expiration_time_buffer":2,
     "sub_result_expiration_in_seconds":6000,
-    "sequential_groups":false,
+    "sequential_groups":true,
     "mqtt_response_topic": "response/#",
     "correlation_id_prefix": "pessimistic-local-task-",
-    "fallback_file": "devicerepo_fallback.json"
+    "fallback_file": "devicerepo_fallback.json",
+    "protocol_handler": "connector",
+    "protocol_segment": "data"
 }

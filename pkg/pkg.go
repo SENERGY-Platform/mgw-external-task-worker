@@ -54,7 +54,7 @@ func Start(ctx context.Context, config configuration.Config) {
 			SubResultExpirationInSeconds:    config.SubResultExpirationInSeconds,
 			SequentialGroups:                config.SequentialGroups,
 		},
-		messaging.Factory{Config: config, Correlation: messaging.DefaultCorrelation, Incidents: incidents.New(config)},
+		messaging.Factory{Config: config, Correlation: messaging.DefaultCorrelation, Incidents: incidents.New(config), IdProvider: configuration.DefaultIdProvider},
 		devicerepo.Factory{Config: config, Cache: cache},
 		camunda.Factory{Config: config},
 		marshaller.Factory{Config: config},

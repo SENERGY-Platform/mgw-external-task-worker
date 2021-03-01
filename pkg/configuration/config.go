@@ -56,6 +56,9 @@ type Config struct {
 	SyncConnectRetryInterval string `json:"sync_connect_retry_interval"`
 	SyncNetworkId            string `json:"network_id"`
 	SyncMqttBroker           string `json:"sync_mqtt_broker"`
+
+	ProtocolHandler string `json:"protocol_handler"`
+	ProtocolSegment string `json:"protocol_segment"`
 }
 
 //loads config from json in location and used environment variables (e.g ZookeeperUrl --> ZOOKEEPER_URL)

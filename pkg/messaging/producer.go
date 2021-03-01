@@ -32,6 +32,7 @@ type Producer struct {
 	correlation Correlation
 	incidents   Incidents
 	mqtt        paho.Client
+	idProvider  func() string
 }
 
 func (this *Producer) start() error {
@@ -86,14 +87,13 @@ func (this *Producer) Log(logger *log.Logger) {
 	//ignore
 }
 
-const ProtocolTopic = "protocol"
 const IncidentTopic = "incidents"
 
 func (this *Producer) convert(topic string, message string) (resultTopic string, resultMessage []byte, err error) {
 	switch topic {
 	case IncidentTopic:
 		return this.handleIncident(message)
-	case ProtocolTopic:
+	case this.config.ProtocolHandler:
 		return this.convertProtocolMessage(message)
 	default:
 		log.Println("WARNING: usage of unsupported topic/protocol", topic)
@@ -121,7 +121,13 @@ func (this *Producer) convertProtocolMessage(message string) (mqttTopic string, 
 	if source.Request.Input == nil {
 		source.Request.Input = map[string]string{}
 	}
-	correlationId := this.config.CorrelationIdPrefix + uuid.NewV4().String()
+	idSuffix := ""
+	if this.idProvider != nil {
+		idSuffix = this.idProvider()
+	} else {
+		idSuffix = uuid.NewV4().String()
+	}
+	correlationId := this.config.CorrelationIdPrefix + idSuffix
 	err = this.correlation.Set(correlationId, source)
 	if err != nil {
 		return
@@ -129,7 +135,7 @@ func (this *Producer) convertProtocolMessage(message string) (mqttTopic string, 
 
 	mqttTopic = "command/" + source.Metadata.Device.LocalId + "/" + source.Metadata.Service.LocalId
 
-	data := source.Request.Input[StandardProtocolPayloadMessageSegment]
+	data := source.Request.Input[this.config.ProtocolSegment]
 	target := Command{
 		CommandId: correlationId,
 		Data:      data,
