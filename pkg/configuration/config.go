@@ -54,7 +54,7 @@ type Config struct {
 	FallbackFile        string `json:"fallback_file"`
 
 	SyncConnectRetryInterval string `json:"sync_connect_retry_interval"`
-	SyncNetworkId            string `json:"network_id"`
+	SyncNetworkId            string `json:"sync_network_id"`
 	SyncMqttBroker           string `json:"sync_mqtt_broker"`
 
 	ProtocolHandler string `json:"protocol_handler"`
