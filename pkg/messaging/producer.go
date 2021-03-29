@@ -24,6 +24,7 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"log"
 	"mgw-external-task-worker/pkg/configuration"
+	"mgw-external-task-worker/pkg/messaging/incidents"
 	"time"
 )
 
@@ -49,6 +50,13 @@ func (this *Producer) start() error {
 		})
 
 	this.mqtt = paho.NewClient(options)
+
+	if this.config.SyncMqttBroker == "" {
+		this.incidents = incidents.NewWithMqttClient(this.config, this.mqtt)
+	} else {
+		this.incidents = incidents.New(this.config)
+	}
+
 	if token := this.mqtt.Connect(); token.Wait() && token.Error() != nil {
 		log.Println("Error on MqttStart.Connect(): ", token.Error())
 		return token.Error()

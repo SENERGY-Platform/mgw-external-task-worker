@@ -53,12 +53,13 @@ type Config struct {
 	DeviceRepoUrl       string `json:"device_repo_url"`
 	FallbackFile        string `json:"fallback_file"`
 
-	SyncConnectRetryInterval string `json:"sync_connect_retry_interval"`
-	SyncNetworkId            string `json:"sync_network_id"`
-	SyncMqttBroker           string `json:"sync_mqtt_broker"`
-
 	ProtocolHandler string `json:"protocol_handler"`
 	ProtocolSegment string `json:"protocol_segment"`
+
+	//optional; use if running as standalone; dont use if running with https://github.com/SENERGY-Platform/senergy-connector
+	SyncMqttBroker           string `json:"sync_mqtt_broker"`
+	SyncNetworkId            string `json:"sync_network_id"`
+	SyncConnectRetryInterval string `json:"sync_connect_retry_interval"`
 }
 
 //loads config from json in location and used environment variables (e.g ZookeeperUrl --> ZOOKEEPER_URL)

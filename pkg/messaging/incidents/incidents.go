@@ -24,6 +24,14 @@ import (
 	"time"
 )
 
+func NewWithMqttClient(config configuration.Config, client paho.Client) (result *Incidents) {
+	result = &Incidents{
+		config: config,
+	}
+	result.mqtt = client
+	return
+}
+
 func New(config configuration.Config) (result *Incidents) {
 	retryInterval, err := time.ParseDuration(config.SyncConnectRetryInterval)
 	if err != nil {
@@ -46,12 +54,9 @@ func New(config configuration.Config) (result *Incidents) {
 			log.Println("connected to sync mqtt broker")
 		})
 
-	result = &Incidents{
-		config: config,
-	}
-	result.mqtt = paho.NewClient(options)
-	result.mqtt.Connect() //dont wait for token because broker mai not be reachable and the ConnectRetry option is set to true
-	return
+	client := paho.NewClient(options)
+	client.Connect() //dont wait for token because broker mai not be reachable and the ConnectRetry option is set to true
+	return NewWithMqttClient(config, client)
 }
 
 type Incidents struct {

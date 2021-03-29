@@ -8,8 +8,12 @@
     "camunda_url":"",
     "mqtt_broker":"",
     "device_repo_url": "",
+
+    "__COMMENT:sync_network_id": "optional; use if running as standalone; dont use if running with https://github.com/SENERGY-Platform/senergy-connector",
     "sync_network_id": "",
+    "__COMMENT:sync_mqtt_broker": "optional; use if running as standalone; dont use if running with https://github.com/SENERGY-Platform/senergy-connector",
     "sync_mqtt_broker": "",
+
     "debug":false,
     "sync_connect_retry_interval": "1m",
     "optimistic_task_completion_timeout": 100,

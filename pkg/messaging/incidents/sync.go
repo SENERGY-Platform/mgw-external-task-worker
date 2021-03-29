@@ -38,7 +38,11 @@ func (this *Incidents) getStateTopic(entity string, substate ...string) (topic s
 }
 
 func (this *Incidents) getBaseTopic() string {
-	return "processes/" + this.config.SyncNetworkId
+	if this.config.SyncNetworkId != "" {
+		return "processes/" + this.config.SyncNetworkId
+	} else {
+		return "processes"
+	}
 }
 
 func (this *Incidents) send(topic string, message interface{}) error {

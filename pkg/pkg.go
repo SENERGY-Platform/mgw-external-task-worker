@@ -26,7 +26,6 @@ import (
 	"mgw-external-task-worker/pkg/devicerepo"
 	"mgw-external-task-worker/pkg/marshaller"
 	"mgw-external-task-worker/pkg/messaging"
-	"mgw-external-task-worker/pkg/messaging/incidents"
 )
 
 func Start(ctx context.Context, config configuration.Config) {
@@ -54,7 +53,7 @@ func Start(ctx context.Context, config configuration.Config) {
 			SubResultExpirationInSeconds:    config.SubResultExpirationInSeconds,
 			SequentialGroups:                config.SequentialGroups,
 		},
-		messaging.Factory{Config: config, Correlation: messaging.DefaultCorrelation, Incidents: incidents.New(config), IdProvider: configuration.DefaultIdProvider},
+		messaging.Factory{Config: config, Correlation: messaging.DefaultCorrelation, IdProvider: configuration.DefaultIdProvider},
 		devicerepo.Factory{Config: config, Cache: cache},
 		camunda.Factory{Config: config},
 		marshaller.Factory{Config: config},

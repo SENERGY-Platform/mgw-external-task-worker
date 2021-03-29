@@ -26,7 +26,6 @@ import (
 type Factory struct {
 	Config      configuration.Config
 	Correlation Correlation
-	Incidents   Incidents
 	IdProvider  func() string
 }
 
@@ -49,7 +48,7 @@ func (this Factory) newConsumer(listener func(msg string) error) (kafka.Consumer
 }
 
 func (this Factory) newProducer() (kafka.ProducerInterface, error) {
-	result := &Producer{config: this.Config, correlation: this.Correlation, incidents: this.Incidents, idProvider: this.IdProvider}
+	result := &Producer{config: this.Config, correlation: this.Correlation, idProvider: this.IdProvider}
 	err := result.start()
 	return result, err
 }
