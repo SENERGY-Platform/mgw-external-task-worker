@@ -293,7 +293,7 @@ func TestIncident(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(syncMessages, map[string][]string{
-		"processes/test-network-id/incident": {
+		"processes/test-network-id/state/incident": {
 			`{"id":"worker-id","external_task_id":"test-task-id-1","process_instance_id":"test-instance-id","process_definition_id":"test-definition-id","worker_id":"worker-id","error_message":"internal format error (Parsing of color failed, Bad Color) (time: 0001-01-01 00:00:00 +0000 UTC)","time":"0001-01-01T00:00:00Z","tenant_id":"","deployment_name":"test-definition-id"}`,
 		},
 	}) {

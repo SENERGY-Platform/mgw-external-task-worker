@@ -30,7 +30,7 @@ func (this *Incidents) sendIncidentToSync(command messages.KafkaIncidentsCommand
 const incidentTopic = "incident"
 
 func (this *Incidents) getStateTopic(entity string, substate ...string) (topic string) {
-	topic = this.getBaseTopic() + "/" + entity
+	topic = this.getBaseTopic() + "/state/" + entity
 	for _, sub := range substate {
 		topic = topic + "/" + sub
 	}
