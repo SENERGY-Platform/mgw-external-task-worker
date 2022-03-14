@@ -22,12 +22,35 @@ import (
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository"
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository/model"
 	"github.com/SENERGY-Platform/external-task-worker/util"
+	"io"
 	"log"
 	"mgw-external-task-worker/pkg/configuration"
 	"net/http"
 	"net/url"
+	"runtime/debug"
+	"strconv"
+	"strings"
+	"sync"
 	"time"
 )
+
+type Provider struct {
+	Config   configuration.Config
+	Cache    *Cache
+	instance *Iot
+	once     sync.Once
+}
+
+func (this *Provider) Get(_ util.Config) devicerepository.RepoInterface {
+	return this.GetImpl()
+}
+
+func (this *Provider) GetImpl() *Iot {
+	this.once.Do(func() {
+		this.instance = New(this.Config, this.Cache)
+	})
+	return this.instance
+}
 
 type Factory struct {
 	Config configuration.Config
@@ -38,7 +61,7 @@ func (this Factory) Get(_ util.Config) devicerepository.RepoInterface {
 	return New(this.Config, this.Cache)
 }
 
-func New(config configuration.Config, cache *Cache) devicerepository.RepoInterface {
+func New(config configuration.Config, cache *Cache) *Iot {
 	return &Iot{config: config, cache: cache}
 }
 
@@ -224,6 +247,141 @@ func (this *Iot) getDeviceGroup(id string) (result model.DeviceGroup, err error)
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return result, err
+	}
+	return
+}
+
+func (this *Iot) GetAspectNode(id string) (result model.AspectNode, err error) {
+	err = this.cache.Use("aspect-nodes."+id, func() (interface{}, error) {
+		return this.getAspectNode(id)
+	}, &result)
+	return
+}
+
+func (this *Iot) getAspectNode(id string) (result model.AspectNode, err error) {
+	token, err := this.getToken()
+	if err != nil {
+		return result, err
+	}
+	err = this.GetJson(token, this.config.DeviceRepoUrl+"/aspect-nodes/"+url.QueryEscape(id), &result)
+	return
+}
+
+type IdWrapper struct {
+	Id string `json:"id"`
+}
+
+func (this *Iot) GetConceptIds() (ids []string, err error) {
+	err = this.cache.Use("concept-ids", func() (interface{}, error) {
+		return this.getConceptIds()
+	}, &ids)
+	return
+}
+
+func (this *Iot) getConceptIds() (ids []string, err error) {
+	token, err := this.getToken()
+	if err != nil {
+		return ids, err
+	}
+	limit := 100
+	offset := 0
+	temp := []IdWrapper{}
+	for len(temp) == limit || offset == 0 {
+		temp = []IdWrapper{}
+		err = this.GetJson(token, this.config.PermissionsUrl+"/v3/resources/concepts?limit="+strconv.Itoa(limit)+"&offset="+strconv.Itoa(offset)+"&sort=name.asc&rights=r", &temp)
+		if err != nil {
+			return ids, err
+		}
+		for _, wrapper := range temp {
+			ids = append(ids, wrapper.Id)
+		}
+		offset = offset + limit
+	}
+	return ids, err
+}
+
+func (this *Iot) ListFunctions() (functionInfos []model.Function, err error) {
+	err = this.cache.Use("list-functions", func() (interface{}, error) {
+		return this.listFunctions()
+	}, &functionInfos)
+	return
+}
+
+func (this *Iot) listFunctions() (functionInfos []model.Function, err error) {
+	token, err := this.getToken()
+	if err != nil {
+		return functionInfos, err
+	}
+	limit := 100
+	offset := 0
+	temp := []model.Function{}
+	for len(temp) == limit || offset == 0 {
+		temp = []model.Function{}
+		endpoint := this.config.PermissionsUrl + "/v3/resources/functions?limit=" + strconv.Itoa(limit) + "&offset=" + strconv.Itoa(offset) + "&sort=name.asc&rights=r"
+		err = this.GetJson(token, endpoint, &temp)
+		if err != nil {
+			return functionInfos, err
+		}
+		functionInfos = append(functionInfos, temp...)
+		offset = offset + limit
+	}
+	return functionInfos, err
+}
+
+func (this *Iot) GetCharacteristic(id string) (result model.Characteristic, err error) {
+	err = this.cache.Use("characteristics."+id, func() (interface{}, error) {
+		return this.getCharacteristic(id)
+	}, &result)
+	return
+}
+
+func (this *Iot) getCharacteristic(id string) (result model.Characteristic, err error) {
+	token, err := this.getToken()
+	if err != nil {
+		return result, err
+	}
+	err = this.GetJson(token, this.config.DeviceRepoUrl+"/characteristics/"+url.PathEscape(id), &result)
+	return
+}
+
+func (this *Iot) GetConcept(id string) (result model.Concept, err error) {
+	err = this.cache.Use("concept."+id, func() (interface{}, error) {
+		return this.getConcept(id)
+	}, &result)
+	return
+}
+
+func (this *Iot) getConcept(id string) (result model.Concept, err error) {
+	token, err := this.getToken()
+	if err != nil {
+		return result, err
+	}
+	err = this.GetJson(token, this.config.DeviceRepoUrl+"/concepts/"+url.PathEscape(id), &result)
+	return
+}
+
+func (this *Iot) GetJson(token string, endpoint string, result interface{}) (err error) {
+	req, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Authorization", token)
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode >= 300 {
+		temp, _ := io.ReadAll(resp.Body)
+		return errors.New(strings.TrimSpace(string(temp)))
+	}
+	err = json.NewDecoder(resp.Body).Decode(result)
+	if err != nil {
+		log.Println("ERROR:", err.Error())
+		debug.PrintStack()
 	}
 	return
 }

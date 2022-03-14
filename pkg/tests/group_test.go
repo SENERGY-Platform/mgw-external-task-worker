@@ -19,7 +19,6 @@ package tests
 import (
 	"context"
 	"encoding/json"
-	"github.com/SENERGY-Platform/converter/lib/converter/example"
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository/model"
 	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
 	"github.com/SENERGY-Platform/external-task-worker/util"
@@ -71,12 +70,24 @@ func TestGroup(t *testing.T) {
 	}
 	config.FallbackFile = fallbackfile
 
+	err = repo.RegisterDefaults()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
 	err = repo.RegisterDevice(model.Device{
 		Id:           "device_1",
 		Name:         "d1",
 		DeviceTypeId: "dt1",
 		LocalId:      "d1u",
 	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	err = repo.RegisterDefaults()
 	if err != nil {
 		t.Error(err)
 		return
@@ -120,12 +131,10 @@ func TestGroup(t *testing.T) {
 		Id: "dt1",
 		Services: []model.Service{
 			{
-				Id:          "service_1",
-				Name:        "s1",
-				LocalId:     "s1u",
-				ProtocolId:  "p1",
-				AspectIds:   []string{"color"},
-				FunctionIds: []string{model.MEASURING_FUNCTION_PREFIX + ":test-function"},
+				Id:         "service_1",
+				Name:       "s1",
+				LocalId:    "s1u",
+				ProtocolId: "p1",
 				Outputs: []model.Content{
 					{
 						Id: "metrics",
@@ -139,6 +148,8 @@ func TestGroup(t *testing.T) {
 									Name:             "level",
 									Type:             model.Integer,
 									CharacteristicId: example.Hex,
+									AspectId:         "color",
+									FunctionId:       model.MEASURING_FUNCTION_PREFIX + ":test-function",
 								},
 							},
 						},
@@ -155,11 +166,11 @@ func TestGroup(t *testing.T) {
 	}
 
 	cmd1 := messages.Command{
-		Version:          2,
+		Version:          3,
 		Function:         model.Function{RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION, Id: model.MEASURING_FUNCTION_PREFIX + ":test-function"},
 		CharacteristicId: example.Rgb,
 		DeviceGroupId:    "dg_1",
-		Aspect: &model.Aspect{
+		Aspect: &model.AspectNode{
 			Id: "color",
 		},
 	}

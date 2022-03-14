@@ -17,7 +17,8 @@
 package messaging
 
 import (
-	"github.com/SENERGY-Platform/external-task-worker/lib/kafka"
+	"context"
+	"github.com/SENERGY-Platform/external-task-worker/lib/com"
 	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
 	"github.com/SENERGY-Platform/external-task-worker/util"
 	"mgw-external-task-worker/pkg/configuration"
@@ -33,22 +34,28 @@ type Incidents interface {
 	Handle(command messages.KafkaIncidentsCommand) error
 }
 
-func (this Factory) NewConsumer(_ util.Config, listener func(msg string) error) (consumer kafka.ConsumerInterface, err error) {
-	return this.newConsumer(listener)
+func (this Factory) NewConsumer(ctx context.Context, config util.Config, respoinseListener func(msg string) error, errorListener func(msg string) error) (err error) {
+	result := &Consumer{config: this.Config, listener: respoinseListener, correlation: this.Correlation}
+	err = result.start()
+	if err != nil {
+		return err
+	}
+	go func() {
+		<-ctx.Done()
+		result.Stop()
+	}()
+	return err
 }
 
-func (this Factory) NewProducer(_ util.Config) (kafka.ProducerInterface, error) {
-	return this.newProducer()
-}
-
-func (this Factory) newConsumer(listener func(msg string) error) (kafka.ConsumerInterface, error) {
-	result := &Consumer{config: this.Config, listener: listener, correlation: this.Correlation}
-	err := result.start()
-	return result, err
-}
-
-func (this Factory) newProducer() (kafka.ProducerInterface, error) {
+func (this Factory) NewProducer(ctx context.Context, config util.Config) (com.ProducerInterface, error) {
 	result := &Producer{config: this.Config, correlation: this.Correlation, idProvider: this.IdProvider}
 	err := result.start()
+	if err != nil {
+		return result, err
+	}
+	go func() {
+		<-ctx.Done()
+		result.Close()
+	}()
 	return result, err
 }

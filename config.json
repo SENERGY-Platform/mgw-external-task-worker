@@ -8,6 +8,7 @@
     "camunda_url":"",
     "mqtt_broker":"",
     "device_repo_url": "",
+    "permissions_url": "https://api.senergy.infai.org/permissions/query",
 
     "__COMMENT:sync_network_id": "optional; use if running as standalone; dont use if running with https://github.com/SENERGY-Platform/senergy-connector",
     "sync_network_id": "",
@@ -28,5 +29,7 @@
     "correlation_id_prefix": "pessimistic-local-task-",
     "fallback_file": "devicerepo_fallback.json",
     "protocol_handler": "connector",
-    "protocol_segment": "data"
+    "protocol_segment": "data",
+
+    "mgw_concept_repo_refresh_interval": 3600
 }

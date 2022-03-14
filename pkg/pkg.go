@@ -35,6 +35,13 @@ func Start(ctx context.Context, config configuration.Config) {
 		return
 	}
 	cache := devicerepo.NewCache(fallback)
+
+	iotProvider := &devicerepo.Provider{Config: config, Cache: cache}
+	scheduler := util.PARALLEL
+	if config.SequentialGroups {
+		scheduler = util.SEQUENTIAL
+	}
+
 	lib.Worker(
 		ctx,
 		util.Config{
@@ -51,11 +58,11 @@ func Start(ctx context.Context, config configuration.Config) {
 			KafkaIncidentTopic:              messaging.IncidentTopic,
 			Debug:                           config.Debug,
 			SubResultExpirationInSeconds:    config.SubResultExpirationInSeconds,
-			SequentialGroups:                config.SequentialGroups,
+			GroupScheduler:                  scheduler,
 		},
 		messaging.Factory{Config: config, Correlation: messaging.DefaultCorrelation, IdProvider: configuration.DefaultIdProvider},
-		devicerepo.Factory{Config: config, Cache: cache},
+		iotProvider,
 		camunda.Factory{Config: config},
-		marshaller.Factory{Config: config},
+		marshaller.Factory{Config: config, DeviceRepo: iotProvider.GetImpl()},
 	)
 }

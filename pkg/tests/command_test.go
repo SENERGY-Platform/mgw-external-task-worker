@@ -19,7 +19,6 @@ package tests
 import (
 	"context"
 	"encoding/json"
-	"github.com/SENERGY-Platform/converter/lib/converter/example"
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository/model"
 	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
 	"github.com/SENERGY-Platform/external-task-worker/util"
@@ -37,6 +36,20 @@ import (
 	"testing"
 	"time"
 )
+
+var example = struct {
+	Brightness string
+	Lux        string
+	Color      string
+	Rgb        string
+	Hex        string
+}{
+	Brightness: "example_brightness",
+	Lux:        "example_lux",
+	Color:      "example_color",
+	Rgb:        "example_rgb",
+	Hex:        "example_hex",
+}
 
 func TestCommand(t *testing.T) {
 	t.Log("error messages like \n\tERROR: getOpenidToken::PostForm() Post \"/auth/realms/master/protocol/openid-connect/token\": unsupported protocol scheme \"\" \nare expected in this test")
@@ -63,6 +76,7 @@ func TestCommand(t *testing.T) {
 
 	config.CompletionStrategy = util.PESSIMISTIC
 	config.CamundaWorkerTimeout = 100
+	//config.SequentialGroups = false
 
 	repo, fallbackfile, err := mocks.NewFallbackFile(ctx, &wg)
 	if err != nil {
@@ -71,12 +85,24 @@ func TestCommand(t *testing.T) {
 	}
 	config.FallbackFile = fallbackfile
 
+	err = repo.RegisterDefaults()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
 	err = repo.RegisterDevice(model.Device{
 		Id:           "device_1",
 		Name:         "d1",
 		DeviceTypeId: "dt1",
 		LocalId:      "d1u",
 	})
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	err = repo.RegisterDefaults()
 	if err != nil {
 		t.Error(err)
 		return
@@ -125,9 +151,7 @@ func TestCommand(t *testing.T) {
 				Name:        "s1",
 				LocalId:     "s1u",
 				ProtocolId:  "p1",
-				AspectIds:   []string{"color"},
 				Interaction: model.REQUEST,
-				FunctionIds: []string{model.CONTROLLING_FUNCTION_PREFIX + ":test-function-2"},
 				Inputs: []model.Content{
 					{
 						Id: "metrics",
@@ -141,6 +165,8 @@ func TestCommand(t *testing.T) {
 									Name:             "level",
 									Type:             model.Integer,
 									CharacteristicId: example.Hex,
+									AspectId:         "color",
+									FunctionId:       model.CONTROLLING_FUNCTION_PREFIX + ":test-function-2",
 								},
 							},
 						},
@@ -157,11 +183,11 @@ func TestCommand(t *testing.T) {
 	}
 
 	cmd1 := messages.Command{
-		Version:          2,
+		Version:          3,
 		Function:         model.Function{RdfType: model.SES_ONTOLOGY_CONTROLLING_FUNCTION, Id: model.CONTROLLING_FUNCTION_PREFIX + ":test-function-2"},
 		CharacteristicId: example.Rgb,
 		DeviceGroupId:    "dg_1",
-		Aspect: &model.Aspect{
+		Aspect: &model.AspectNode{
 			Id: "color",
 		},
 		DeviceClass: &model.DeviceClass{
@@ -296,7 +322,8 @@ func TestCommand(t *testing.T) {
 			`{"command_id":"pessimistic-local-task-uuid-1","data":""}`,
 		},
 	}) {
-		t.Error(mgwMessages)
+		temp, _ := json.Marshal(mgwMessages)
+		t.Error(string(temp))
 	}
 
 	if !reflect.DeepEqual(syncMessages, map[string][]string{}) {

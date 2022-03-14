@@ -19,7 +19,7 @@ package camunda
 import (
 	"github.com/SENERGY-Platform/external-task-worker/lib/camunda"
 	"github.com/SENERGY-Platform/external-task-worker/lib/camunda/interfaces"
-	"github.com/SENERGY-Platform/external-task-worker/lib/kafka"
+	"github.com/SENERGY-Platform/external-task-worker/lib/com"
 	"github.com/SENERGY-Platform/external-task-worker/util"
 	"mgw-external-task-worker/pkg/configuration"
 )
@@ -38,6 +38,6 @@ func (this Shards) GetShardForUser(_ string) (shardUrl string, err error) {
 	return string(this), nil
 }
 
-func (this Factory) Get(config util.Config, producer kafka.ProducerInterface) (interfaces.CamundaInterface, error) {
+func (this Factory) Get(config util.Config, producer com.ProducerInterface) (interfaces.CamundaInterface, error) {
 	return camunda.NewCamundaWithShards(config, producer, Shards(this.Config.CamundaUrl)), nil
 }

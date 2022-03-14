@@ -19,7 +19,6 @@ package tests
 import (
 	"context"
 	"encoding/json"
-	"github.com/SENERGY-Platform/converter/lib/converter/example"
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository/model"
 	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
 	"github.com/SENERGY-Platform/external-task-worker/util"
@@ -71,6 +70,12 @@ func TestResponse(t *testing.T) {
 	}
 	config.FallbackFile = fallbackfile
 
+	err = repo.RegisterDefaults()
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
 	err = repo.RegisterDevice(model.Device{
 		Id:           "device_1",
 		Name:         "d1",
@@ -116,6 +121,7 @@ func TestResponse(t *testing.T) {
 									Name:             "level",
 									Type:             model.Integer,
 									CharacteristicId: example.Hex,
+									FunctionId:       model.MEASURING_FUNCTION_PREFIX + "getColor",
 								},
 							},
 						},
@@ -132,8 +138,8 @@ func TestResponse(t *testing.T) {
 	}
 
 	cmd1 := messages.Command{
-		Version:          2,
-		Function:         model.Function{RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION},
+		Version:          3,
+		Function:         model.Function{Id: model.MEASURING_FUNCTION_PREFIX + "getColor"},
 		CharacteristicId: example.Rgb,
 		DeviceId:         "device_1",
 		ServiceId:        "service_1",
@@ -147,8 +153,8 @@ func TestResponse(t *testing.T) {
 	}
 
 	cmd2 := messages.Command{
-		Version:          2,
-		Function:         model.Function{RdfType: model.SES_ONTOLOGY_MEASURING_FUNCTION},
+		Version:          3,
+		Function:         model.Function{Id: model.MEASURING_FUNCTION_PREFIX + "getColor"},
 		CharacteristicId: example.Hex,
 		DeviceId:         "device_1",
 		ServiceId:        "service_1",
@@ -271,7 +277,7 @@ func TestResponse(t *testing.T) {
 	}
 	mgwmux.Unlock()
 
-	time.Sleep(1 * time.Second)
+	time.Sleep(2 * time.Second)
 
 	t.Log(mgwMessages)
 	t.Log(syncMessages)

@@ -51,10 +51,13 @@ type Config struct {
 	MqttResponseTopic   string `json:"mqtt_response_topic"`
 	CorrelationIdPrefix string `json:"correlation_id_prefix"`
 	DeviceRepoUrl       string `json:"device_repo_url"`
+	PermissionsUrl      string `json:"permissions_url"`
 	FallbackFile        string `json:"fallback_file"`
 
 	ProtocolHandler string `json:"protocol_handler"`
 	ProtocolSegment string `json:"protocol_segment"`
+
+	MgwConceptRepoRefreshInterval int64 `json:"mgw_concept_repo_refresh_interval"`
 
 	//optional; use if running as standalone; dont use if running with https://github.com/SENERGY-Platform/senergy-connector
 	SyncMqttBroker           string `json:"sync_mqtt_broker"`

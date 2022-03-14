@@ -18,9 +18,11 @@ package mocks
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository/model"
 	"mgw-external-task-worker/pkg/devicerepo"
 	"os"
+	"runtime/debug"
 	"strconv"
 	"sync"
 	"time"
@@ -60,4 +62,90 @@ func (this *Repo) RegisterDeviceType(deviceType model.DeviceType) (err error) {
 
 func (this *Repo) RegisterDeviceGroup(group model.DeviceGroup) error {
 	return this.fallback.Set("deviceGroup."+group.Id, group)
+}
+
+func (this *Repo) RegisterAspectNode(aspect model.AspectNode) (err error) {
+	return this.fallback.Set("aspect-nodes."+aspect.Id, aspect)
+}
+
+func (this *Repo) RegisterConceptIds(ids []string) (err error) {
+	return this.fallback.Set("concept-ids", ids)
+}
+
+func (this *Repo) RegisterListFunctions(functionInfos []model.Function) (err error) {
+	return this.fallback.Set("list-functions", functionInfos)
+}
+
+func (this *Repo) RegisterCharacteristic(characteristic model.Characteristic) (err error) {
+	return this.fallback.Set("characteristics."+characteristic.Id, characteristic)
+}
+
+func (this *Repo) RegisterConcept(concept model.Concept) (err error) {
+	return this.fallback.Set("concept."+concept.Id, concept)
+}
+
+func (this *Repo) RegisterDefaults() (err error) {
+	conceptList := []model.Concept{}
+	err = json.Unmarshal([]byte(conceptListStr), &conceptList)
+	if err != nil {
+		debug.PrintStack()
+		return err
+	}
+	conceptIds := []string{}
+	for _, e := range conceptList {
+		err = this.RegisterConcept(e)
+		if err != nil {
+			debug.PrintStack()
+			return err
+		}
+		conceptIds = append(conceptIds, e.Id)
+	}
+	err = this.RegisterConceptIds(conceptIds)
+	if err != nil {
+		debug.PrintStack()
+		return err
+	}
+
+	functions := []model.Function{}
+	err = json.Unmarshal([]byte(functionsListStr), &functions)
+	if err != nil {
+		debug.PrintStack()
+		return err
+	}
+	err = this.RegisterListFunctions(functions)
+	if err != nil {
+		debug.PrintStack()
+		return err
+	}
+	conceptMap := map[string]model.Concept{}
+	err = json.Unmarshal([]byte(conceptPathMapStr), &conceptMap)
+	if err != nil {
+		debug.PrintStack()
+		return err
+	}
+	for _, e := range conceptMap {
+		for _, id := range e.CharacteristicIds {
+			err = this.RegisterCharacteristic(model.Characteristic{Id: id})
+			if err != nil {
+				debug.PrintStack()
+				return err
+			}
+		}
+	}
+
+	characteristicsMap := map[string]model.Characteristic{}
+	err = json.Unmarshal([]byte(characteristicsPathMapStr), &characteristicsMap)
+	if err != nil {
+		debug.PrintStack()
+		return err
+	}
+	for _, e := range characteristicsMap {
+		err = this.RegisterCharacteristic(e)
+		if err != nil {
+			debug.PrintStack()
+			return err
+		}
+	}
+
+	return nil
 }
