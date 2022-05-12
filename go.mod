@@ -3,10 +3,10 @@ module mgw-external-task-worker
 go 1.18
 
 require (
-	github.com/SENERGY-Platform/converter v0.0.0-20220506072101-e31e4cedd586
-	github.com/SENERGY-Platform/external-task-worker v0.0.0-20220506084642-47e15f9a2d69
-	github.com/SENERGY-Platform/marshaller v0.0.0-20220506082425-7a398c073b9d
-	github.com/coocood/freecache v1.1.1
+	github.com/SENERGY-Platform/converter v0.0.0-20220512105400-d22e8a0222db
+	github.com/SENERGY-Platform/external-task-worker v0.0.0-20220512124436-bca5eb20f421
+	github.com/SENERGY-Platform/marshaller v0.0.0-20220512122627-deaeb66ecf80
+	github.com/coocood/freecache v1.2.1
 	github.com/eclipse/paho.mqtt.golang v1.3.2
 	github.com/ory/dockertest/v3 v3.7.0
 	github.com/satori/go.uuid v1.2.0
@@ -14,12 +14,13 @@ require (
 
 require (
 	github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78 // indirect
+	github.com/Knetic/govaluate v3.0.0+incompatible // indirect
 	github.com/Microsoft/go-winio v0.4.14 // indirect
 	github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 // indirect
 	github.com/RyanCarrier/dijkstra v1.1.0 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20190913173617-a41fca850d0b // indirect
 	github.com/cenkalti/backoff/v4 v4.1.0 // indirect
-	github.com/cespare/xxhash v1.1.0 // indirect
+	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/clbanning/mxj v1.8.4 // indirect
 	github.com/containerd/continuity v0.0.0-20190827140505-75bee3e2ccb6 // indirect
 	github.com/docker/cli v20.10.7+incompatible // indirect
@@ -30,7 +31,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.1+incompatible // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
-	github.com/google/uuid v1.1.1 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/klauspost/compress v1.9.8 // indirect
