@@ -3,9 +3,9 @@ module mgw-external-task-worker
 go 1.18
 
 require (
-	github.com/SENERGY-Platform/converter v0.0.0-20220512105400-d22e8a0222db
-	github.com/SENERGY-Platform/external-task-worker v0.0.0-20220512124436-bca5eb20f421
-	github.com/SENERGY-Platform/marshaller v0.0.0-20220512122627-deaeb66ecf80
+	github.com/SENERGY-Platform/converter v0.0.0-20220516061431-8ae63b7fc0f8
+	github.com/SENERGY-Platform/external-task-worker v0.0.0-20220516064345-b4799aca6fe4
+	github.com/SENERGY-Platform/marshaller v0.0.0-20220516061904-345a9ac10208
 	github.com/coocood/freecache v1.2.1
 	github.com/eclipse/paho.mqtt.golang v1.3.2
 	github.com/ory/dockertest/v3 v3.7.0
