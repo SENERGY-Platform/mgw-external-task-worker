@@ -4,8 +4,8 @@ go 1.18
 
 require (
 	github.com/SENERGY-Platform/converter v0.0.0-20220516061431-8ae63b7fc0f8
-	github.com/SENERGY-Platform/external-task-worker v0.0.0-20220516064345-b4799aca6fe4
-	github.com/SENERGY-Platform/marshaller v0.0.0-20220516061904-345a9ac10208
+	github.com/SENERGY-Platform/external-task-worker v0.0.0-20220516090039-2f3c8d3ad446
+	github.com/SENERGY-Platform/marshaller v0.0.0-20220516083047-e675abced587
 	github.com/coocood/freecache v1.2.1
 	github.com/eclipse/paho.mqtt.golang v1.3.2
 	github.com/ory/dockertest/v3 v3.7.0

@@ -13,10 +13,10 @@ github.com/RyanCarrier/dijkstra-1 v0.0.0-20170512020943-0e5801a26345 h1:fgSpoKVi
 github.com/RyanCarrier/dijkstra-1 v0.0.0-20170512020943-0e5801a26345/go.mod h1:OK4EvWJ441LQqGzed5NGB6vKBAE34n3z7iayPcEwr30=
 github.com/SENERGY-Platform/converter v0.0.0-20220516061431-8ae63b7fc0f8 h1:f5WPBtq+ysbyfXKJPpVsBKahDVHC61AXDX4CPBpZIIo=
 github.com/SENERGY-Platform/converter v0.0.0-20220516061431-8ae63b7fc0f8/go.mod h1:tNlmWollEzd2MTSMoPf2u+GXKakZnW/4v1iUxxm8YI4=
-github.com/SENERGY-Platform/external-task-worker v0.0.0-20220516064345-b4799aca6fe4 h1:KVLdSbMta4OMQxZqn85sb24epEy+0DSRs7mA/pDNGdM=
-github.com/SENERGY-Platform/external-task-worker v0.0.0-20220516064345-b4799aca6fe4/go.mod h1:eH6PtMe1hMq6vu1pFxTZoxK9ElEXUy27Giqj/AlkOZM=
-github.com/SENERGY-Platform/marshaller v0.0.0-20220516061904-345a9ac10208 h1:JEnIt6QrG/3chRpWkNLkFh9uE51/eOqa/i6+0tyIQkA=
-github.com/SENERGY-Platform/marshaller v0.0.0-20220516061904-345a9ac10208/go.mod h1:+PNKM2QLina1ymqtsUQIvaGil/Mn5j/tfF1amL5JyWc=
+github.com/SENERGY-Platform/external-task-worker v0.0.0-20220516090039-2f3c8d3ad446 h1:+F2hvPE1ReUQxJ+CfKcPS4l+jIa1QsNZ5d4QzPDNGSU=
+github.com/SENERGY-Platform/external-task-worker v0.0.0-20220516090039-2f3c8d3ad446/go.mod h1:8h0HZp7K12GJaU/oguZvdwK2HDUAZ6w7BO9jTgTYvt4=
+github.com/SENERGY-Platform/marshaller v0.0.0-20220516083047-e675abced587 h1:AArly/h5J2e3cTY7F4qErPU/zo5HZddZynzwYGw3SK4=
+github.com/SENERGY-Platform/marshaller v0.0.0-20220516083047-e675abced587/go.mod h1:+PNKM2QLina1ymqtsUQIvaGil/Mn5j/tfF1amL5JyWc=
 github.com/albertorestifo/dijkstra v0.0.0-20160910063646-aba76f725f72 h1:uGeGZl8PxSq8VZGG4QK5njJTFA4/G/x5CYORvQVXtAE=
 github.com/albertorestifo/dijkstra v0.0.0-20160910063646-aba76f725f72/go.mod h1:o+JdB7VetTHjLhU0N57x18B9voDBQe0paApdEAEoEfw=
 github.com/bits-and-blooms/bitset v1.2.0/go.mod h1:gIdJ4wp64HaoK2YrL1Q5/N7Y16edYb8uY+O0FJTyyDA=
