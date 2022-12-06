@@ -37,6 +37,8 @@ type Config struct {
 	CamundaTopic                    string `json:"camunda_topic"`
 	CamundaTaskResultName           string `json:"camunda_task_result_name"`
 
+	TimescaleWrapperUrl string `json:"timescale_wrapper_url"`
+
 	AuthExpirationTimeBuffer     float64 `json:"auth_expiration_time_buffer"`
 	AuthEndpoint                 string  `json:"auth_endpoint"`
 	AuthClientId                 string  `json:"auth_client_id"`
@@ -65,7 +67,7 @@ type Config struct {
 	SyncConnectRetryInterval string `json:"sync_connect_retry_interval"`
 }
 
-//loads config from json in location and used environment variables (e.g ZookeeperUrl --> ZOOKEEPER_URL)
+// loads config from json in location and used environment variables (e.g ZookeeperUrl --> ZOOKEEPER_URL)
 func Load(location string) (config Config, err error) {
 	file, err := os.Open(location)
 	if err != nil {

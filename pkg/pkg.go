@@ -26,6 +26,7 @@ import (
 	"mgw-external-task-worker/pkg/devicerepo"
 	"mgw-external-task-worker/pkg/marshaller"
 	"mgw-external-task-worker/pkg/messaging"
+	"mgw-external-task-worker/pkg/timescale"
 )
 
 func Start(ctx context.Context, config configuration.Config) {
@@ -59,10 +60,12 @@ func Start(ctx context.Context, config configuration.Config) {
 			Debug:                           config.Debug,
 			SubResultExpirationInSeconds:    config.SubResultExpirationInSeconds,
 			GroupScheduler:                  scheduler,
+			TimescaleWrapperUrl:             config.TimescaleWrapperUrl,
 		},
 		messaging.Factory{Config: config, Correlation: messaging.DefaultCorrelation, IdProvider: configuration.DefaultIdProvider},
 		iotProvider,
 		camunda.Factory{Config: config},
 		marshaller.Factory{Config: config, DeviceRepo: iotProvider.GetImpl()},
+		timescale.Factory,
 	)
 }
