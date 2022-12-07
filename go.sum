@@ -13,8 +13,8 @@ github.com/RyanCarrier/dijkstra-1 v0.0.0-20170512020943-0e5801a26345 h1:fgSpoKVi
 github.com/RyanCarrier/dijkstra-1 v0.0.0-20170512020943-0e5801a26345/go.mod h1:OK4EvWJ441LQqGzed5NGB6vKBAE34n3z7iayPcEwr30=
 github.com/SENERGY-Platform/converter v0.0.0-20220810123448-27fbbf6ab679 h1:73IwfEYhENSbwB/OnBQ4zTg9F31pYacy1l4oY5kgHAM=
 github.com/SENERGY-Platform/converter v0.0.0-20220810123448-27fbbf6ab679/go.mod h1:tNlmWollEzd2MTSMoPf2u+GXKakZnW/4v1iUxxm8YI4=
-github.com/SENERGY-Platform/external-task-worker v0.0.0-20221205103022-96c03f37f3c1 h1:42TQ3S6MvKQxUujB+hESpLY9GnuGbyzeR8xkU29UiN4=
-github.com/SENERGY-Platform/external-task-worker v0.0.0-20221205103022-96c03f37f3c1/go.mod h1:TugjovvJCTf0Xi0Qi/VLcmePdcjzTF9oIrAKwxqjSWo=
+github.com/SENERGY-Platform/external-task-worker v0.0.0-20221207065442-ef84fbb134e3 h1:dtta35RxmJ1N7OMFB9acrIdSlfLthgXqZ5IKC81dctU=
+github.com/SENERGY-Platform/external-task-worker v0.0.0-20221207065442-ef84fbb134e3/go.mod h1:TugjovvJCTf0Xi0Qi/VLcmePdcjzTF9oIrAKwxqjSWo=
 github.com/SENERGY-Platform/marshaller v0.0.0-20220823070456-9df7dd3f42e5 h1:PoBsWXjmXq6cfskywh5I47l10oJFSVcvEZ/r/oIIkVo=
 github.com/SENERGY-Platform/marshaller v0.0.0-20220823070456-9df7dd3f42e5/go.mod h1:m0WGyyFIfrbVTchqgZRsxvtVosUq2MOQo8kAo3xHSSg=
 github.com/albertorestifo/dijkstra v0.0.0-20160910063646-aba76f725f72 h1:uGeGZl8PxSq8VZGG4QK5njJTFA4/G/x5CYORvQVXtAE=
