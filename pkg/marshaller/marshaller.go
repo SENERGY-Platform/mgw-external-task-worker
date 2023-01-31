@@ -28,6 +28,7 @@ import (
 	marshaller_service "github.com/SENERGY-Platform/marshaller/lib/marshaller"
 	marshaller_service_model "github.com/SENERGY-Platform/marshaller/lib/marshaller/model"
 	marshaller_service_v2 "github.com/SENERGY-Platform/marshaller/lib/marshaller/v2"
+	"github.com/SENERGY-Platform/models/go/models"
 	"log"
 	"mgw-external-task-worker/pkg/configuration"
 	"mgw-external-task-worker/pkg/devicerepo"
@@ -122,46 +123,21 @@ func jsonCast(in interface{}, out interface{}) (err error) {
 }
 
 func (this *Marshaller) MarshalV2(service model.Service, protocol model.Protocol, data []marshaller.MarshallingV2RequestData) (result map[string]string, err error) {
-	mockService := marshaller_service_model.Service{}
-	mockProtocol := marshaller_service_model.Protocol{}
 	mockData := []marshaller_service_model.MarshallingV2RequestData{}
-	err = jsonCast(service, &mockService)
-	if err != nil {
-		return result, err
-	}
-	err = jsonCast(protocol, &mockProtocol)
-	if err != nil {
-		return result, err
-	}
 	err = jsonCast(data, &mockData)
 	if err != nil {
 		return result, err
 	}
-	return this.v2.Marshal(mockProtocol, mockService, mockData)
+	return this.v2.Marshal(protocol, service, mockData)
 }
 
 func (this *Marshaller) UnmarshalV2(request marshaller.UnmarshallingV2Request) (result interface{}, err error) {
-	mockProtocol := marshaller_service_model.Protocol{}
-	err = jsonCast(request.Protocol, &mockProtocol)
-	if err != nil {
-		return result, err
-	}
-	mockService := marshaller_service_model.Service{}
-	err = jsonCast(request.Service, &mockService)
-	if err != nil {
-		return result, err
-	}
-	var mockAspect *marshaller_service_model.AspectNode
+	var aspect *models.AspectNode
 	if request.AspectNode.Id != "" {
-		mockAspect = &marshaller_service_model.AspectNode{}
-		err = jsonCast(request.AspectNode, mockAspect)
-		if err != nil {
-			debug.PrintStack()
-			return result, err
-		}
+		aspect = &request.AspectNode
 	}
 	if request.Path == "" {
-		paths := this.v2.GetOutputPaths(mockService, request.FunctionId, mockAspect)
+		paths := this.v2.GetOutputPaths(request.Service, request.FunctionId, aspect)
 		if len(paths) > 1 {
 			log.Println("WARNING: only first path found by FunctionId and AspectNode is used for Unmarshal:", paths)
 		}
@@ -170,5 +146,5 @@ func (this *Marshaller) UnmarshalV2(request marshaller.UnmarshallingV2Request) (
 		}
 		request.Path = paths[0]
 	}
-	return this.v2.Unmarshal(mockProtocol, mockService, request.CharacteristicId, request.Path, request.Message)
+	return this.v2.Unmarshal(request.Protocol, request.Service, request.CharacteristicId, request.Path, request.Message, nil)
 }
