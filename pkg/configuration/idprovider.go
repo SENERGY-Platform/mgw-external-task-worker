@@ -16,10 +16,10 @@
 
 package configuration
 
-import uuid "github.com/satori/go.uuid"
+import "github.com/google/uuid"
 
 var DefaultIdProvider = DefaultIdProviderImpl
 
 func DefaultIdProviderImpl() string {
-	return uuid.NewV4().String()
+	return uuid.NewString()
 }

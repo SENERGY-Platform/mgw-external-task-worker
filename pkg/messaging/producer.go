@@ -21,7 +21,7 @@ import (
 	"errors"
 	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
 	paho "github.com/eclipse/paho.mqtt.golang"
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 	"log"
 	"mgw-external-task-worker/pkg/configuration"
 	"mgw-external-task-worker/pkg/messaging/incidents"
@@ -133,7 +133,7 @@ func (this *Producer) convertProtocolMessage(message string) (mqttTopic string, 
 	if this.idProvider != nil {
 		idSuffix = this.idProvider()
 	} else {
-		idSuffix = uuid.NewV4().String()
+		idSuffix = uuid.NewString()
 	}
 	correlationId := this.config.CorrelationIdPrefix + idSuffix
 	err = this.correlation.Set(correlationId, source)
