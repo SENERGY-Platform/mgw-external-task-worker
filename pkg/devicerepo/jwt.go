@@ -19,8 +19,8 @@ package devicerepo
 import (
 	"encoding/json"
 	"errors"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
 	"log"
-	"mgw-external-task-worker/pkg/configuration"
 	"net/http"
 	"time"
 

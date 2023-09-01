@@ -28,10 +28,10 @@ import (
 	marshaller_service "github.com/SENERGY-Platform/marshaller/lib/marshaller"
 	marshaller_service_model "github.com/SENERGY-Platform/marshaller/lib/marshaller/model"
 	marshaller_service_v2 "github.com/SENERGY-Platform/marshaller/lib/marshaller/v2"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/devicerepo"
 	"github.com/SENERGY-Platform/models/go/models"
 	"log"
-	"mgw-external-task-worker/pkg/configuration"
-	"mgw-external-task-worker/pkg/devicerepo"
 	"runtime/debug"
 )
 

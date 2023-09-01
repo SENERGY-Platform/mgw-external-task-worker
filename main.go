@@ -19,9 +19,9 @@ package main
 import (
 	"context"
 	"flag"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
 	"log"
-	"mgw-external-task-worker/pkg"
-	"mgw-external-task-worker/pkg/configuration"
 	"os"
 	"os/signal"
 	"time"

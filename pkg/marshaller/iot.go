@@ -20,8 +20,8 @@ import (
 	"context"
 	"errors"
 	"github.com/SENERGY-Platform/marshaller/lib/marshaller/model"
-	"mgw-external-task-worker/pkg/configuration"
-	"mgw-external-task-worker/pkg/devicerepo"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/devicerepo"
 	"net/http"
 )
 
@@ -42,7 +42,7 @@ func (this *MarshallerIot) GetAspectNode(id string) (result model.AspectNode, er
 	return result, err
 }
 
-//this method should only be needed for old marshal/unmarshal requests
+// this method should only be needed for old marshal/unmarshal requests
 func (this MarshallerIot) GetDeviceType(id string) (result model.DeviceType, err error, code int) {
 	return result, errors.New("not implemented"), http.StatusInternalServerError
 }

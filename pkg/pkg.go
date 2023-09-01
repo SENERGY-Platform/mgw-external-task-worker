@@ -20,13 +20,13 @@ import (
 	"context"
 	"github.com/SENERGY-Platform/external-task-worker/lib"
 	"github.com/SENERGY-Platform/external-task-worker/util"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/camunda"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/devicerepo"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/marshaller"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/messaging"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/timescale"
 	"log"
-	"mgw-external-task-worker/pkg/camunda"
-	"mgw-external-task-worker/pkg/configuration"
-	"mgw-external-task-worker/pkg/devicerepo"
-	"mgw-external-task-worker/pkg/marshaller"
-	"mgw-external-task-worker/pkg/messaging"
-	"mgw-external-task-worker/pkg/timescale"
 )
 
 func Start(ctx context.Context, config configuration.Config) {

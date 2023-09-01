@@ -19,9 +19,9 @@ package messaging
 import (
 	"encoding/json"
 	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
 	paho "github.com/eclipse/paho.mqtt.golang"
 	"log"
-	"mgw-external-task-worker/pkg/configuration"
 	"strings"
 )
 

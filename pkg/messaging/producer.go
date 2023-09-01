@@ -20,11 +20,11 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/messaging/incidents"
 	paho "github.com/eclipse/paho.mqtt.golang"
 	"github.com/google/uuid"
 	"log"
-	"mgw-external-task-worker/pkg/configuration"
-	"mgw-external-task-worker/pkg/messaging/incidents"
 	"time"
 )
 

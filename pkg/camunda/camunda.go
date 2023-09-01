@@ -21,7 +21,7 @@ import (
 	"github.com/SENERGY-Platform/external-task-worker/lib/camunda/interfaces"
 	"github.com/SENERGY-Platform/external-task-worker/lib/com"
 	"github.com/SENERGY-Platform/external-task-worker/util"
-	"mgw-external-task-worker/pkg/configuration"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
 )
 
 type Factory struct {

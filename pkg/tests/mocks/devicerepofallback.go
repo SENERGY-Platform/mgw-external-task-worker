@@ -20,7 +20,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository/model"
-	"mgw-external-task-worker/pkg/devicerepo"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/devicerepo"
 	"os"
 	"runtime/debug"
 	"strconv"
