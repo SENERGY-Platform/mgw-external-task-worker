@@ -26,8 +26,6 @@ import (
 	"strings"
 )
 
-var LogEnvConfig = true
-
 type Config struct {
 	CompletionStrategy              string `json:"completion_strategy"`
 	OptimisticTaskCompletionTimeout int64  `json:"optimistic_task_completion_timeout"`
@@ -41,9 +39,9 @@ type Config struct {
 
 	AuthExpirationTimeBuffer     float64 `json:"auth_expiration_time_buffer"`
 	AuthEndpoint                 string  `json:"auth_endpoint"`
-	AuthClientId                 string  `json:"auth_client_id"`
-	AuthUserName                 string  `json:"auth_user_name"`
-	AuthPassword                 string  `json:"auth_password"`
+	AuthClientId                 string  `json:"auth_client_id" config:"secret"`
+	AuthUserName                 string  `json:"auth_user_name" config:"secret"`
+	AuthPassword                 string  `json:"auth_password" config:"secret"`
 	Debug                        bool    `json:"debug"`
 	SubResultExpirationInSeconds int32   `json:"sub_result_expiration_in_seconds"`
 	SequentialGroups             bool    `json:"sequential_groups"`
@@ -102,12 +100,15 @@ func handleEnvironmentVars(config *Config) {
 	configType := configValue.Type()
 	for index := 0; index < configType.NumField(); index++ {
 		fieldName := configType.Field(index).Name
+		fieldConfig := configType.Field(index).Tag.Get("config")
 		envName := fieldNameToEnvName(fieldName)
 		envValue := os.Getenv(envName)
 		if envValue != "" {
-			if LogEnvConfig {
-				fmt.Println("use environment variable: ", envName, " = ", envValue)
+			loggedEnvValue := envValue
+			if strings.Contains(fieldConfig, "secret") {
+				loggedEnvValue = "***"
 			}
+			fmt.Println("use environment variable: ", envName, " = ", loggedEnvValue)
 			if configValue.FieldByName(fieldName).Kind() == reflect.Int64 {
 				i, _ := strconv.ParseInt(envValue, 10, 64)
 				configValue.FieldByName(fieldName).SetInt(i)
