@@ -20,7 +20,7 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository/model"
-	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/devicerepo"
+	"github.com/SENERGY-Platform/service-commons/pkg/cache/fallback"
 	"os"
 	"runtime/debug"
 	"strconv"
@@ -36,16 +36,16 @@ func NewFallbackFile(ctx context.Context, wg *sync.WaitGroup) (repo *Repo, filen
 		<-ctx.Done()
 		os.Remove(filename)
 	}()
-	fallback, err := devicerepo.NewFallback(filename)
+	fb, err := fallback.New(filename)
 	if err != nil {
 		return nil, "", err
 	}
-	repo = &Repo{fallback: fallback}
+	repo = &Repo{fallback: fb}
 	return
 }
 
 type Repo struct {
-	fallback devicerepo.Fallback
+	fallback *fallback.Fallback
 }
 
 func (this *Repo) RegisterDevice(device model.Device) (err error) {

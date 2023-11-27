@@ -26,18 +26,18 @@ import (
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/marshaller"
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/messaging"
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/timescale"
+	"github.com/SENERGY-Platform/service-commons/pkg/cache"
+	fallback "github.com/SENERGY-Platform/service-commons/pkg/cache/fallback"
 	"log"
 )
 
 func Start(ctx context.Context, config configuration.Config) {
-	fallback, err := devicerepo.NewFallback(config.FallbackFile)
+	c, err := cache.New(cache.Config{FallbackProvider: fallback.NewProvider(config.FallbackFile)})
 	if err != nil {
 		log.Fatal(err)
 		return
 	}
-	cache := devicerepo.NewCache(fallback)
-
-	iotProvider := &devicerepo.Provider{Config: config, Cache: cache}
+	iotProvider := &devicerepo.Provider{Config: config, Cache: c}
 	scheduler := util.PARALLEL
 	if config.SequentialGroups {
 		scheduler = util.SEQUENTIAL

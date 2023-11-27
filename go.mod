@@ -9,7 +9,7 @@ require (
 	github.com/SENERGY-Platform/external-task-worker v0.0.0-20231115081052-8ad661f7ff21
 	github.com/SENERGY-Platform/marshaller v0.0.0-20231115075542-ac22a787cd4b
 	github.com/SENERGY-Platform/models/go v0.0.0-20230824080159-16585960df38
-	github.com/coocood/freecache v1.2.4
+	github.com/SENERGY-Platform/service-commons v0.0.0-20231115074650-7021aeae60e4
 	github.com/eclipse/paho.mqtt.golang v1.4.3
 	github.com/google/uuid v1.4.0
 	github.com/ory/dockertest/v3 v3.10.0
@@ -22,13 +22,13 @@ require (
 	github.com/Microsoft/go-winio v0.6.1 // indirect
 	github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 // indirect
 	github.com/RyanCarrier/dijkstra v1.3.0 // indirect
-	github.com/SENERGY-Platform/service-commons v0.0.0-20231115074650-7021aeae60e4 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/clbanning/mxj v1.8.4 // indirect
 	github.com/containerd/continuity v0.4.3 // indirect
+	github.com/coocood/freecache v1.2.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/docker/cli v24.0.7+incompatible // indirect
 	github.com/docker/docker v24.0.7+incompatible // indirect

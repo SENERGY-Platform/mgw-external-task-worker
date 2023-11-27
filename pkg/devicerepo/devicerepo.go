@@ -23,6 +23,7 @@ import (
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository/model"
 	"github.com/SENERGY-Platform/external-task-worker/util"
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
+	"github.com/SENERGY-Platform/service-commons/pkg/cache"
 	"io"
 	"log"
 	"net/http"
@@ -34,9 +35,11 @@ import (
 	"time"
 )
 
+const CacheExpiration = 60 * time.Second
+
 type Provider struct {
 	Config   configuration.Config
-	Cache    *Cache
+	Cache    *cache.Cache
 	instance *Iot
 	once     sync.Once
 }
@@ -54,21 +57,21 @@ func (this *Provider) GetImpl() *Iot {
 
 type Factory struct {
 	Config configuration.Config
-	Cache  *Cache
+	Cache  *cache.Cache
 }
 
 func (this Factory) Get(_ util.Config) devicerepository.RepoInterface {
 	return New(this.Config, this.Cache)
 }
 
-func New(config configuration.Config, cache *Cache) *Iot {
+func New(config configuration.Config, cache *cache.Cache) *Iot {
 	return &Iot{config: config, cache: cache}
 }
 
 type Iot struct {
 	config      configuration.Config
 	openIdToken *OpenidToken
-	cache       *Cache
+	cache       *cache.Cache
 }
 
 func (this *Iot) getToken() (string, error) {
@@ -89,10 +92,9 @@ func (this *Iot) GetToken(user string) (devicerepository.Impersonate, error) {
 }
 
 func (this *Iot) GetDevice(_ devicerepository.Impersonate, id string) (result model.Device, err error) {
-	err = this.cache.Use("device."+id, func() (interface{}, error) {
+	return cache.Use(this.cache, "device."+id, func() (model.Device, error) {
 		return this.getDevice(id)
-	}, &result)
-	return
+	}, CacheExpiration)
 }
 
 func (this *Iot) GetService(token devicerepository.Impersonate, device model.Device, serviceId string) (result model.Service, err error) {
@@ -111,24 +113,21 @@ func (this *Iot) GetService(token devicerepository.Impersonate, device model.Dev
 }
 
 func (this *Iot) GetProtocol(_ devicerepository.Impersonate, id string) (result model.Protocol, err error) {
-	err = this.cache.Use("protocol."+id, func() (interface{}, error) {
+	return cache.Use(this.cache, "protocol."+id, func() (model.Protocol, error) {
 		return this.getProtocol(id)
-	}, &result)
-	return
+	}, CacheExpiration)
 }
 
 func (this *Iot) GetDeviceType(_ devicerepository.Impersonate, id string) (result model.DeviceType, err error) {
-	err = this.cache.Use("deviceType."+id, func() (interface{}, error) {
+	return cache.Use(this.cache, "deviceType."+id, func() (model.DeviceType, error) {
 		return this.getDeviceType(id)
-	}, &result)
-	return
+	}, CacheExpiration)
 }
 
 func (this *Iot) GetDeviceGroup(_ devicerepository.Impersonate, id string) (result model.DeviceGroup, err error) {
-	err = this.cache.Use("deviceGroup."+id, func() (interface{}, error) {
+	return cache.Use(this.cache, "deviceGroup."+id, func() (model.DeviceGroup, error) {
 		return this.getDeviceGroup(id)
-	}, &result)
-	return
+	}, CacheExpiration)
 }
 
 func (this *Iot) getDevice(id string) (result model.Device, err error) {
@@ -252,10 +251,9 @@ func (this *Iot) getDeviceGroup(id string) (result model.DeviceGroup, err error)
 }
 
 func (this *Iot) GetAspectNode(id string) (result model.AspectNode, err error) {
-	err = this.cache.Use("aspect-nodes."+id, func() (interface{}, error) {
+	return cache.Use(this.cache, "aspect-nodes."+id, func() (model.AspectNode, error) {
 		return this.getAspectNode(id)
-	}, &result)
-	return
+	}, CacheExpiration)
 }
 
 func (this *Iot) getAspectNode(id string) (result model.AspectNode, err error) {
@@ -272,10 +270,9 @@ type IdWrapper struct {
 }
 
 func (this *Iot) GetConceptIds() (ids []string, err error) {
-	err = this.cache.Use("concept-ids", func() (interface{}, error) {
+	return cache.Use(this.cache, "concept-ids", func() ([]string, error) {
 		return this.getConceptIds()
-	}, &ids)
-	return
+	}, CacheExpiration)
 }
 
 func (this *Iot) getConceptIds() (ids []string, err error) {
@@ -301,10 +298,9 @@ func (this *Iot) getConceptIds() (ids []string, err error) {
 }
 
 func (this *Iot) ListFunctions() (functionInfos []model.Function, err error) {
-	err = this.cache.Use("list-functions", func() (interface{}, error) {
+	return cache.Use(this.cache, "list-functions", func() ([]model.Function, error) {
 		return this.listFunctions()
-	}, &functionInfos)
-	return
+	}, CacheExpiration)
 }
 
 func (this *Iot) listFunctions() (functionInfos []model.Function, err error) {
@@ -329,10 +325,9 @@ func (this *Iot) listFunctions() (functionInfos []model.Function, err error) {
 }
 
 func (this *Iot) GetCharacteristic(id string) (result model.Characteristic, err error) {
-	err = this.cache.Use("characteristics."+id, func() (interface{}, error) {
+	return cache.Use(this.cache, "characteristics."+id, func() (model.Characteristic, error) {
 		return this.getCharacteristic(id)
-	}, &result)
-	return
+	}, CacheExpiration)
 }
 
 func (this *Iot) getCharacteristic(id string) (result model.Characteristic, err error) {
@@ -345,10 +340,9 @@ func (this *Iot) getCharacteristic(id string) (result model.Characteristic, err 
 }
 
 func (this *Iot) GetConcept(id string) (result model.Concept, err error) {
-	err = this.cache.Use("concept."+id, func() (interface{}, error) {
+	return cache.Use(this.cache, "concept."+id, func() (model.Concept, error) {
 		return this.getConcept(id)
-	}, &result)
-	return
+	}, CacheExpiration)
 }
 
 func (this *Iot) getConcept(id string) (result model.Concept, err error) {
