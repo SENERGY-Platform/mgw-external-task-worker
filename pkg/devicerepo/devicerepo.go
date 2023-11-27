@@ -41,8 +41,8 @@ type Provider struct {
 	once     sync.Once
 }
 
-func (this *Provider) Get(_ util.Config) devicerepository.RepoInterface {
-	return this.GetImpl()
+func (this *Provider) Get(_ util.Config) (devicerepository.RepoInterface, error) {
+	return this.GetImpl(), nil
 }
 
 func (this *Provider) GetImpl() *Iot {
