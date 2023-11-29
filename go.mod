@@ -7,7 +7,7 @@ toolchain go1.21.0
 require (
 	github.com/SENERGY-Platform/converter v0.0.0-20231027124924-d43b98b1b5cc
 	github.com/SENERGY-Platform/external-task-worker v0.0.0-20231115081052-8ad661f7ff21
-	github.com/SENERGY-Platform/marshaller v0.0.0-20231115075542-ac22a787cd4b
+	github.com/SENERGY-Platform/marshaller v0.0.0-20231128121458-ed546ad8a870
 	github.com/SENERGY-Platform/models/go v0.0.0-20230824080159-16585960df38
 	github.com/SENERGY-Platform/service-commons v0.0.0-20231115074650-7021aeae60e4
 	github.com/eclipse/paho.mqtt.golang v1.4.3
@@ -69,17 +69,17 @@ require (
 	github.com/prometheus/common v0.45.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
-	github.com/segmentio/kafka-go v0.4.45 // indirect
+	github.com/segmentio/kafka-go v0.4.46 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
-	golang.org/x/crypto v0.15.0 // indirect
+	golang.org/x/crypto v0.16.0 // indirect
 	golang.org/x/mod v0.14.0 // indirect
-	golang.org/x/net v0.18.0 // indirect
+	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/sync v0.5.0 // indirect
-	golang.org/x/sys v0.14.0 // indirect
-	golang.org/x/tools v0.15.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/tools v0.16.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/go-playground/colors.v1 v1.2.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
