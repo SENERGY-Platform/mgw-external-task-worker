@@ -6,7 +6,7 @@ toolchain go1.21.0
 
 require (
 	github.com/SENERGY-Platform/converter v0.0.4
-	github.com/SENERGY-Platform/external-task-worker v0.0.3
+	github.com/SENERGY-Platform/external-task-worker v0.0.4
 	github.com/SENERGY-Platform/marshaller v0.0.3
 	github.com/SENERGY-Platform/models/go v0.0.0-20230824080159-16585960df38
 	github.com/SENERGY-Platform/service-commons v0.0.0-20231115074650-7021aeae60e4
@@ -32,7 +32,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/docker/cli v24.0.7+incompatible // indirect
 	github.com/docker/docker v24.0.7+incompatible // indirect
-	github.com/docker/go-connections v0.4.0 // indirect
+	github.com/docker/go-connections v0.5.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/eapache/go-resiliency v1.5.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20230731223053-c322873962e3 // indirect
