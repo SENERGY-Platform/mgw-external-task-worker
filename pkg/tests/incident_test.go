@@ -293,38 +293,45 @@ func TestIncident(t *testing.T) {
 
 	time.Sleep(2 * time.Second)
 
-	t.Log(mgwMessages)
-	t.Log(syncMessages)
-	t.Log(camundamock.UnexpectedRequests)
-	t.Log(camundamock.CompleteRequests)
-	t.Log(camundamock.StopRequests)
-
+	/*
+		t.Log(mgwMessages)
+		t.Log(syncMessages)
+		t.Log(camundamock.UnexpectedRequests)
+		t.Log(camundamock.CompleteRequests)
+		t.Log(camundamock.StopRequests)
+	*/
 	if !reflect.DeepEqual(mgwMessages, map[string][]string{}) {
 		t.Error(mgwMessages)
+		return
 	}
 
-	if !reflect.DeepEqual(syncMessages, map[string][]string{
+	expectedSyncMessages := map[string][]string{
 		"processes/test-network-id/state/incident": {
-			`{"id":"worker-id","external_task_id":"test-task-id-1","process_instance_id":"test-instance-id","process_definition_id":"test-definition-id","worker_id":"worker-id","error_message":"internal format error (Parsing of color failed, Bad Color) (time: 0001-01-01 00:00:00 +0000 UTC)","time":"0001-01-01T00:00:00Z","tenant_id":"","deployment_name":"test-definition-id"}`,
+			`{"id":"worker-id","external_task_id":"test-task-id-1","process_instance_id":"test-instance-id","process_definition_id":"test-definition-id","worker_id":"worker-id","error_message":"internal format error: Parsing of color failed, Bad Color","time":"0001-01-01T00:00:00Z","tenant_id":"","deployment_name":"test-definition-id"}`,
 		},
-	}) {
-		t.Error(syncMessages)
+	}
+	if !reflect.DeepEqual(syncMessages, expectedSyncMessages) {
+		t.Errorf("\n%#v\n%#v\n", expectedSyncMessages, syncMessages)
+		return
 	}
 
 	if !reflect.DeepEqual(camundamock.CompleteRequests, map[string][]interface{}{}) {
 		t.Error(camundamock.CompleteRequests)
+		return
 	}
 
 	if !reflect.DeepEqual(camundamock.StopRequests, map[string][]interface{}{
 		"/engine-rest/process-instance/test-instance-id": {nil},
 	}) {
 		t.Error(camundamock.StopRequests)
+		return
 	}
 
 	if !reflect.DeepEqual(camundamock.UnexpectedRequests, map[string][]interface{}{
 		"/engine-rest/process-definition/test-definition-id": {nil},
 	}) {
 		t.Error(camundamock.UnexpectedRequests)
+		return
 	}
 
 }
