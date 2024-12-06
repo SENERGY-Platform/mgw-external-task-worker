@@ -3,11 +3,11 @@ module github.com/SENERGY-Platform/mgw-external-task-worker
 go 1.22
 
 require (
-	github.com/SENERGY-Platform/converter v0.0.8
-	github.com/SENERGY-Platform/external-task-worker v0.0.22
-	github.com/SENERGY-Platform/marshaller v0.0.15
+	github.com/SENERGY-Platform/converter v0.0.9
+	github.com/SENERGY-Platform/external-task-worker v0.0.24
+	github.com/SENERGY-Platform/marshaller v0.0.16
 	github.com/SENERGY-Platform/models/go v0.0.0-20240627082833-157bd627a94f
-	github.com/SENERGY-Platform/service-commons v0.0.0-20240708085423-94423a495d7f
+	github.com/SENERGY-Platform/service-commons v0.0.0-20240813072046-91b3195dd8fc
 	github.com/eclipse/paho.mqtt.golang v1.4.3
 	github.com/google/uuid v1.6.0
 	github.com/ory/dockertest/v3 v3.10.0
@@ -29,7 +29,6 @@ require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/clbanning/mxj v1.8.4 // indirect
 	github.com/containerd/continuity v0.4.3 // indirect
-	github.com/coocood/freecache v1.2.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/docker/cli v26.1.4+incompatible // indirect
 	github.com/docker/docker v26.1.4+incompatible // indirect
