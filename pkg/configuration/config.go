@@ -51,7 +51,6 @@ type Config struct {
 	MqttResponseTopic   string `json:"mqtt_response_topic"`
 	CorrelationIdPrefix string `json:"correlation_id_prefix"`
 	DeviceRepoUrl       string `json:"device_repo_url"`
-	PermissionsUrl      string `json:"permissions_url"`
 	FallbackFile        string `json:"fallback_file"`
 
 	ProtocolHandler string `json:"protocol_handler"`

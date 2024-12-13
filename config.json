@@ -8,7 +8,6 @@
     "camunda_url":"",
     "mqtt_broker":"",
     "device_repo_url": "",
-    "permissions_url": "https://api.senergy.infai.org/permissions/query",
 
     "timescale_wrapper_url": "",
 

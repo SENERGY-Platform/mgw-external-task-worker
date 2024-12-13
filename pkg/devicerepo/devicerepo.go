@@ -19,6 +19,7 @@ package devicerepo
 import (
 	"encoding/json"
 	"errors"
+	"github.com/SENERGY-Platform/device-repository/lib/client"
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository"
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository/model"
 	"github.com/SENERGY-Platform/external-task-worker/util"
@@ -29,7 +30,6 @@ import (
 	"net/http"
 	"net/url"
 	"runtime/debug"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -303,16 +303,16 @@ func (this *Iot) GetConceptIds() (ids []string, err error) {
 }
 
 func (this *Iot) getConceptIds() (ids []string, err error) {
-	token, err := this.getToken()
-	if err != nil {
-		return ids, err
-	}
-	limit := 100
+	limit := 1000
 	offset := 0
-	temp := []IdWrapper{}
+	temp := []model.Concept{}
+	c := client.NewClient(this.config.DeviceRepoUrl)
 	for len(temp) == limit || offset == 0 {
-		temp = []IdWrapper{}
-		err = this.GetJson(token, this.config.PermissionsUrl+"/v3/resources/concepts?limit="+strconv.Itoa(limit)+"&offset="+strconv.Itoa(offset)+"&sort=name.asc&rights=r", &temp)
+		temp, _, err, _ = c.ListConcepts(client.ConceptListOptions{
+			Limit:  int64(limit),
+			Offset: int64(offset),
+			SortBy: "name.asc",
+		})
 		if err != nil {
 			return ids, err
 		}
@@ -333,21 +333,22 @@ func (this *Iot) ListFunctions() (functionInfos []model.Function, err error) {
 }
 
 func (this *Iot) listFunctions() (functionInfos []model.Function, err error) {
-	token, err := this.getToken()
-	if err != nil {
-		return functionInfos, err
-	}
 	limit := 100
 	offset := 0
 	temp := []model.Function{}
+	c := client.NewClient(this.config.DeviceRepoUrl)
 	for len(temp) == limit || offset == 0 {
-		temp = []model.Function{}
-		endpoint := this.config.PermissionsUrl + "/v3/resources/functions?limit=" + strconv.Itoa(limit) + "&offset=" + strconv.Itoa(offset) + "&sort=name.asc&rights=r"
-		err = this.GetJson(token, endpoint, &temp)
+		temp, _, err, _ = c.ListFunctions(client.FunctionListOptions{
+			Limit:  int64(limit),
+			Offset: int64(offset),
+			SortBy: "name.asc",
+		})
 		if err != nil {
 			return functionInfos, err
 		}
-		functionInfos = append(functionInfos, temp...)
+		for _, f := range temp {
+			functionInfos = append(functionInfos, f)
+		}
 		offset = offset + limit
 	}
 	return functionInfos, err
