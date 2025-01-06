@@ -306,7 +306,7 @@ func (this *Iot) getConceptIds() (ids []string, err error) {
 	limit := 1000
 	offset := 0
 	temp := []model.Concept{}
-	c := client.NewClient(this.config.DeviceRepoUrl)
+	c := client.NewClient(this.config.DeviceRepoUrl, this.getToken)
 	for len(temp) == limit || offset == 0 {
 		temp, _, err, _ = c.ListConcepts(client.ConceptListOptions{
 			Limit:  int64(limit),
@@ -314,6 +314,7 @@ func (this *Iot) getConceptIds() (ids []string, err error) {
 			SortBy: "name.asc",
 		})
 		if err != nil {
+			log.Println("ERROR: getConceptIds()", err)
 			return ids, err
 		}
 		for _, wrapper := range temp {
@@ -336,7 +337,7 @@ func (this *Iot) listFunctions() (functionInfos []model.Function, err error) {
 	limit := 100
 	offset := 0
 	temp := []model.Function{}
-	c := client.NewClient(this.config.DeviceRepoUrl)
+	c := client.NewClient(this.config.DeviceRepoUrl, this.getToken)
 	for len(temp) == limit || offset == 0 {
 		temp, _, err, _ = c.ListFunctions(client.FunctionListOptions{
 			Limit:  int64(limit),
