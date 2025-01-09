@@ -29,11 +29,11 @@ import (
 type Config struct {
 	CompletionStrategy              string `json:"completion_strategy"`
 	OptimisticTaskCompletionTimeout int64  `json:"optimistic_task_completion_timeout"`
-	CamundaWorkerTimeout            int64  `json:"camunda_worker_timeout"`
 	CamundaWorkerTasks              int64  `json:"camunda_worker_tasks"`
 	CamundaFetchLockDuration        int64  `json:"camunda_fetch_lock_duration"`
 	CamundaTopic                    string `json:"camunda_topic"`
 	CamundaTaskResultName           string `json:"camunda_task_result_name"`
+	CamundaLongPollTimeout          int64  `json:"camunda_long_poll_timeout"`
 
 	TimescaleWrapperUrl string `json:"timescale_wrapper_url"`
 

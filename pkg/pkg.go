@@ -48,7 +48,7 @@ func Start(ctx context.Context, config configuration.Config) {
 		util.Config{
 			CompletionStrategy:                config.CompletionStrategy,
 			OptimisticTaskCompletionTimeout:   config.OptimisticTaskCompletionTimeout,
-			CamundaWorkerTimeout:              config.CamundaWorkerTimeout,
+			CamundaLongPollTimeout:            config.CamundaLongPollTimeout,
 			CamundaWorkerTasks:                config.CamundaWorkerTasks,
 			CamundaFetchLockDuration:          config.CamundaFetchLockDuration,
 			CamundaTopic:                      config.CamundaTopic,

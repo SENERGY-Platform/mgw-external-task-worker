@@ -61,7 +61,6 @@ func TestResponse(t *testing.T) {
 	}
 
 	config.CompletionStrategy = util.PESSIMISTIC
-	config.CamundaWorkerTimeout = 100
 
 	repo, fallbackfile, err := mocks.NewFallbackFile(ctx, &wg)
 	if err != nil {

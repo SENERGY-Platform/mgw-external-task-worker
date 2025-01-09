@@ -75,7 +75,6 @@ func TestCommand(t *testing.T) {
 	}
 
 	config.CompletionStrategy = util.PESSIMISTIC
-	config.CamundaWorkerTimeout = 100
 	//config.SequentialGroups = false
 
 	repo, fallbackfile, err := mocks.NewFallbackFile(ctx, &wg)

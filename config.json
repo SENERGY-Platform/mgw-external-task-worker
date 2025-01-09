@@ -19,7 +19,7 @@
     "debug":false,
     "sync_connect_retry_interval": "1m",
     "optimistic_task_completion_timeout": 100,
-    "camunda_worker_timeout":1000,
+    "camunda_long_poll_timeout": 10000,
     "camunda_worker_tasks":10,
     "camunda_fetch_lock_duration":60000,
     "camunda_task_result_name":"result",
