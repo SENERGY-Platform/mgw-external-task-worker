@@ -21,7 +21,7 @@
     "optimistic_task_completion_timeout": 100,
     "camunda_long_poll_timeout": 10000,
     "camunda_worker_tasks":10,
-    "camunda_fetch_lock_duration":60000,
+    "camunda_fetch_lock_duration":10000,
     "camunda_task_result_name":"result",
     "auth_expiration_time_buffer":2,
     "sub_result_expiration_in_seconds":6000,
