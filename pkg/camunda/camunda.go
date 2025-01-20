@@ -39,5 +39,5 @@ func (this Shards) GetShardForUser(_ string) (shardUrl string, err error) {
 }
 
 func (this Factory) Get(config util.Config, producer com.ProducerInterface, metrics interfaces.Metrics) (interfaces.CamundaInterface, error) {
-	return camunda.NewCamundaWithShards(config, producer, metrics, Shards(this.Config.CamundaUrl)), nil
+	return camunda.NewCamundaWithShards(config, producer, metrics, Shards(this.Config.CamundaUrl))
 }
