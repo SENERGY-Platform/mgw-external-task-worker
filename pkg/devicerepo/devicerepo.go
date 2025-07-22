@@ -75,6 +75,9 @@ type Iot struct {
 }
 
 func (this *Iot) getToken() (string, error) {
+	if !this.config.AuthEnabled() {
+		return "", nil
+	}
 	if this.openIdToken == nil {
 		this.openIdToken = &OpenidToken{}
 	}
@@ -151,19 +154,21 @@ func (this *Iot) GetDeviceGroup(_ devicerepository.Impersonate, id string) (resu
 }
 
 func (this *Iot) getDevice(id string) (result model.Device, err error) {
-	token, err := this.getToken()
-	if err != nil {
-		return result, err
-	}
 	req, err := http.NewRequest("GET", this.config.DeviceRepoUrl+"/devices/"+url.PathEscape(id), nil)
 	if err != nil {
 		return result, err
 	}
-	req.Header.Set("Authorization", token)
-	client := &http.Client{
+	if this.config.AuthEnabled() {
+		token, err := this.getToken()
+		if err != nil {
+			return result, err
+		}
+		req.Header.Set("Authorization", token)
+	}
+	c := &http.Client{
 		Timeout: 10 * time.Second,
 	}
-	resp, err := client.Do(req)
+	resp, err := c.Do(req)
 	if err != nil {
 		return result, err
 	}
@@ -181,19 +186,21 @@ func (this *Iot) getDevice(id string) (result model.Device, err error) {
 }
 
 func (this *Iot) getProtocol(id string) (result model.Protocol, err error) {
-	token, err := this.getToken()
-	if err != nil {
-		return result, err
-	}
 	req, err := http.NewRequest("GET", this.config.DeviceRepoUrl+"/protocols/"+url.PathEscape(id), nil)
 	if err != nil {
 		return result, err
 	}
-	req.Header.Set("Authorization", token)
-	client := &http.Client{
+	if this.config.AuthEnabled() {
+		token, err := this.getToken()
+		if err != nil {
+			return result, err
+		}
+		req.Header.Set("Authorization", token)
+	}
+	c := &http.Client{
 		Timeout: 10 * time.Second,
 	}
-	resp, err := client.Do(req)
+	resp, err := c.Do(req)
 	if err != nil {
 		return result, err
 	}
@@ -211,19 +218,21 @@ func (this *Iot) getProtocol(id string) (result model.Protocol, err error) {
 }
 
 func (this *Iot) getDeviceType(id string) (result model.DeviceType, err error) {
-	token, err := this.getToken()
-	if err != nil {
-		return result, err
-	}
 	req, err := http.NewRequest("GET", this.config.DeviceRepoUrl+"/device-types/"+url.PathEscape(id), nil)
 	if err != nil {
 		return result, err
 	}
-	req.Header.Set("Authorization", token)
-	client := &http.Client{
+	if this.config.AuthEnabled() {
+		token, err := this.getToken()
+		if err != nil {
+			return result, err
+		}
+		req.Header.Set("Authorization", token)
+	}
+	c := &http.Client{
 		Timeout: 10 * time.Second,
 	}
-	resp, err := client.Do(req)
+	resp, err := c.Do(req)
 	if err != nil {
 		return result, err
 	}
@@ -241,19 +250,21 @@ func (this *Iot) getDeviceType(id string) (result model.DeviceType, err error) {
 }
 
 func (this *Iot) getDeviceGroup(id string) (result model.DeviceGroup, err error) {
-	token, err := this.getToken()
-	if err != nil {
-		return result, err
-	}
 	req, err := http.NewRequest("GET", this.config.DeviceRepoUrl+"/device-groups/"+url.PathEscape(id), nil)
 	if err != nil {
 		return result, err
 	}
-	req.Header.Set("Authorization", token)
-	client := &http.Client{
+	if this.config.AuthEnabled() {
+		token, err := this.getToken()
+		if err != nil {
+			return result, err
+		}
+		req.Header.Set("Authorization", token)
+	}
+	c := &http.Client{
 		Timeout: 10 * time.Second,
 	}
-	resp, err := client.Do(req)
+	resp, err := c.Do(req)
 	if err != nil {
 		return result, err
 	}
@@ -400,11 +411,13 @@ func (this *Iot) GetJson(token string, endpoint string, result interface{}) (err
 	if err != nil {
 		return err
 	}
-	req.Header.Set("Authorization", token)
-	client := &http.Client{
+	if token != "" {
+		req.Header.Set("Authorization", token)
+	}
+	c := &http.Client{
 		Timeout: 10 * time.Second,
 	}
-	resp, err := client.Do(req)
+	resp, err := c.Do(req)
 	if err != nil {
 		return err
 	}
