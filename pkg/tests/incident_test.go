@@ -19,6 +19,14 @@ package tests
 import (
 	"context"
 	"encoding/json"
+	"log"
+	"reflect"
+	"strconv"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository/model"
 	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
 	"github.com/SENERGY-Platform/external-task-worker/util"
@@ -28,17 +36,10 @@ import (
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/tests/docker"
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/tests/mocks"
 	paho "github.com/eclipse/paho.mqtt.golang"
-	"log"
-	"reflect"
-	"strconv"
-	"strings"
-	"sync"
-	"testing"
-	"time"
 )
 
 func TestIncident(t *testing.T) {
-	t.Log("error messages like \n\tERROR: getOpenidToken::PostForm() Post \"/auth/realms/master/protocol/openid-connect/token\": unsupported protocol scheme \"\" \nare expected in this test")
+	t.Log("TEST-NOTICE: error messages like \n\tERROR: getOpenidToken::PostForm() Post \"/auth/realms/master/protocol/openid-connect/token\": unsupported protocol scheme \"\" \nare expected in this test")
 	wg := sync.WaitGroup{}
 	defer wg.Wait()
 
@@ -197,6 +198,7 @@ func TestIncident(t *testing.T) {
 				Id:                  "test-task-id-1",
 				ProcessDefinitionId: "test-definition-id",
 				ProcessInstanceId:   "test-instance-id",
+				BusinessKey:         "bk",
 				Variables: map[string]messages.CamundaVariable{
 					util.CAMUNDA_VARIABLES_PAYLOAD: {
 						Value: string(cmdMsg1),
@@ -306,7 +308,7 @@ func TestIncident(t *testing.T) {
 
 	expectedSyncMessages := map[string][]string{
 		"processes/test-network-id/state/incident": {
-			`{"id":"worker-id","external_task_id":"test-task-id-1","process_instance_id":"test-instance-id","process_definition_id":"test-definition-id","worker_id":"worker-id","error_message":"internal format error: Parsing of color failed, Bad Color","time":"0001-01-01T00:00:00Z","tenant_id":"","deployment_name":"test-definition-id"}`,
+			`{"id":"worker-id","external_task_id":"test-task-id-1","process_instance_id":"test-instance-id","process_definition_id":"test-definition-id","worker_id":"worker-id","error_message":"internal format error: Parsing of color failed, Bad Color","time":"0001-01-01T00:00:00Z","tenant_id":"","deployment_name":"test-definition-id","business_key":"bk"}`,
 		},
 	}
 	if !reflect.DeepEqual(syncMessages, expectedSyncMessages) {

@@ -7,7 +7,7 @@ toolchain go1.24.5
 require (
 	github.com/SENERGY-Platform/converter v0.0.10
 	github.com/SENERGY-Platform/device-repository v0.2.27
-	github.com/SENERGY-Platform/external-task-worker v0.0.39
+	github.com/SENERGY-Platform/external-task-worker v0.0.40
 	github.com/SENERGY-Platform/marshaller v0.0.22
 	github.com/SENERGY-Platform/models/go v0.0.0-20241007061544-de7132ae94e4
 	github.com/SENERGY-Platform/service-commons v0.0.0-20250707072258-a5b49118c926
@@ -30,7 +30,7 @@ require (
 	github.com/SENERGY-Platform/developer-notifications v0.0.4 // indirect
 	github.com/SENERGY-Platform/go-service-base/struct-logger v0.4.1 // indirect
 	github.com/SENERGY-Platform/permissions-v2 v0.0.38 // indirect
-	github.com/SENERGY-Platform/process-incident-api v0.0.8 // indirect
+	github.com/SENERGY-Platform/process-incident-api v0.0.9 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bradfitz/gomemcache v0.0.0-20230905024940-24af94b03874 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
