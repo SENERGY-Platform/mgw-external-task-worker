@@ -32,5 +32,7 @@
     "protocol_handler": "connector",
     "protocol_segment": "data",
 
-    "mgw_concept_repo_refresh_interval": 3600
+    "mgw_concept_repo_refresh_interval": 3600,
+
+    "async_cache_refresh": false
 }

@@ -19,10 +19,12 @@ package devicerepo
 import (
 	"encoding/json"
 	"errors"
-	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
 	"log"
 	"net/http"
+	"sync"
 	"time"
+
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
 
 	"net/url"
 
@@ -36,9 +38,16 @@ type OpenidToken struct {
 	RefreshToken     string    `json:"refresh_token"`
 	TokenType        string    `json:"token_type"`
 	RequestTime      time.Time `json:"-"`
+	mux              sync.Mutex
 }
 
 func (openid *OpenidToken) EnsureAccess(config configuration.Config) (token string, err error) {
+	if !config.AuthEnabled() {
+		return "", nil
+	}
+	openid.mux.Lock()
+	defer openid.mux.Unlock()
+
 	duration := time.Now().Sub(openid.RequestTime).Seconds()
 
 	if openid.AccessToken != "" && openid.ExpiresIn-config.AuthExpirationTimeBuffer > duration {

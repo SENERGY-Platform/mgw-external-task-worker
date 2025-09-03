@@ -10,7 +10,7 @@ require (
 	github.com/SENERGY-Platform/external-task-worker v0.0.40
 	github.com/SENERGY-Platform/marshaller v0.0.22
 	github.com/SENERGY-Platform/models/go v0.0.0-20241007061544-de7132ae94e4
-	github.com/SENERGY-Platform/service-commons v0.0.0-20250707072258-a5b49118c926
+	github.com/SENERGY-Platform/service-commons v0.0.0-20250903071414-1b34f1965afa
 	github.com/eclipse/paho.mqtt.golang v1.4.3
 	github.com/google/uuid v1.6.0
 	github.com/ory/dockertest/v3 v3.10.0

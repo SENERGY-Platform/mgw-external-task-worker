@@ -62,6 +62,8 @@ type Config struct {
 	SyncMqttBroker           string `json:"sync_mqtt_broker"`
 	SyncNetworkId            string `json:"sync_network_id"`
 	SyncConnectRetryInterval string `json:"sync_connect_retry_interval"`
+
+	AsyncCacheRefresh bool `json:"async_cache_refresh"`
 }
 
 // loads config from json in location and used environment variables (e.g ZookeeperUrl --> ZOOKEEPER_URL)
