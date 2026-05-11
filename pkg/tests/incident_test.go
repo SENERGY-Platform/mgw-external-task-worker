@@ -129,7 +129,6 @@ func TestIncident(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	config.ProtocolHandler = "protocol1"
 	config.ProtocolSegment = "body"
 
 	err = repo.RegisterDeviceType(model.DeviceType{

@@ -53,7 +53,6 @@ type Config struct {
 	DeviceRepoUrl       string `json:"device_repo_url"`
 	FallbackFile        string `json:"fallback_file"`
 
-	ProtocolHandler string `json:"protocol_handler"`
 	ProtocolSegment string `json:"protocol_segment"`
 
 	MgwConceptRepoRefreshInterval int64 `json:"mgw_concept_repo_refresh_interval"`

@@ -19,6 +19,14 @@ package tests
 import (
 	"context"
 	"encoding/json"
+	"log"
+	"reflect"
+	"strconv"
+	"strings"
+	"sync"
+	"testing"
+	"time"
+
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository/model"
 	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
 	"github.com/SENERGY-Platform/external-task-worker/util"
@@ -28,13 +36,6 @@ import (
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/tests/docker"
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/tests/mocks"
 	paho "github.com/eclipse/paho.mqtt.golang"
-	"log"
-	"reflect"
-	"strconv"
-	"strings"
-	"sync"
-	"testing"
-	"time"
 )
 
 var example = struct {
@@ -138,7 +139,6 @@ func TestCommand(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	config.ProtocolHandler = "protocol1"
 	config.ProtocolSegment = "body"
 
 	err = repo.RegisterDeviceType(model.DeviceType{

@@ -29,7 +29,6 @@
     "mqtt_response_topic": "response/#",
     "correlation_id_prefix": "pessimistic-local-task-",
     "fallback_file": "devicerepo_fallback.json",
-    "protocol_handler": "connector",
     "protocol_segment": "data",
 
     "mgw_concept_repo_refresh_interval": 3600,

@@ -19,13 +19,14 @@ package messaging
 import (
 	"encoding/json"
 	"errors"
+	"log"
+	"time"
+
 	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/messaging/incidents"
 	paho "github.com/eclipse/paho.mqtt.golang"
 	"github.com/google/uuid"
-	"log"
-	"time"
 )
 
 type Producer struct {
@@ -101,11 +102,8 @@ func (this *Producer) convert(topic string, message string) (resultTopic string,
 	switch topic {
 	case IncidentTopic:
 		return this.handleIncident(message)
-	case this.config.ProtocolHandler:
-		return this.convertProtocolMessage(message)
 	default:
-		log.Println("WARNING: usage of unsupported topic/protocol", topic)
-		return //skip mqtt produce because resultTopic remains ""
+		return this.convertProtocolMessage(message)
 	}
 }
 
