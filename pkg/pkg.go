@@ -18,6 +18,9 @@ package pkg
 
 import (
 	"context"
+	"log"
+	"os"
+
 	"github.com/SENERGY-Platform/external-task-worker/lib"
 	"github.com/SENERGY-Platform/external-task-worker/util"
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/camunda"
@@ -28,14 +31,19 @@ import (
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/timescale"
 	"github.com/SENERGY-Platform/service-commons/pkg/cache"
 	fallback "github.com/SENERGY-Platform/service-commons/pkg/cache/fallback"
-	"log"
 )
 
 func Start(ctx context.Context, config configuration.Config) {
 	c, err := cache.New(cache.Config{FallbackProvider: fallback.NewProvider(config.FallbackFile)})
 	if err != nil {
-		log.Fatal(err)
-		return
+		config.GetLogger().Warn("unable to create cache with fallback file", "error", err)
+		os.Remove(config.FallbackFile)
+		c, err = cache.New(cache.Config{FallbackProvider: fallback.NewProvider(config.FallbackFile)})
+		if err != nil {
+			config.GetLogger().Error("unable to create cache with fallback file, after deletion of the old fallback file", "error", err)
+			log.Fatal("unable to create cache with fallback file, after deletion of the old fallback file", err)
+			return
+		}
 	}
 	iotProvider := &devicerepo.Provider{Config: config, Cache: c}
 	scheduler := util.PARALLEL
@@ -62,6 +70,7 @@ func Start(ctx context.Context, config configuration.Config) {
 			GroupScheduler:                    scheduler,
 			TimescaleWrapperUrl:               config.TimescaleWrapperUrl,
 			HandleMissingLastValueTimeAsError: true, //because this runs in the mgw environment
+			LogLevel:                          config.LogLevel,
 		},
 		messaging.Factory{Config: config, Correlation: messaging.DefaultCorrelation, IdProvider: configuration.DefaultIdProvider},
 		iotProvider,

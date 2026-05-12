@@ -19,7 +19,8 @@ package devicerepo
 import (
 	"encoding/json"
 	"errors"
-	"log"
+	"io"
+	"log/slog"
 	"net/http"
 	"sync"
 	"time"
@@ -56,20 +57,20 @@ func (openid *OpenidToken) EnsureAccess(config configuration.Config) (token stri
 	}
 
 	if openid.RefreshToken != "" && openid.RefreshExpiresIn-config.AuthExpirationTimeBuffer > duration {
-		log.Println("refresh token", openid.RefreshExpiresIn, duration)
+		slog.Debug("refresh token", "expires_in", openid.RefreshExpiresIn, "duration", duration)
 		err = refreshOpenidToken(openid, config)
 		if err != nil {
-			log.Println("WARNING: unable to use refreshtoken", err)
+			slog.Warn("unable to use refreshtoken", "error", err)
 		} else {
 			token = "Bearer " + openid.AccessToken
 			return
 		}
 	}
 
-	log.Println("get new access token")
+	slog.Debug("get new access token")
 	err = getOpenidToken(openid, config)
 	if err != nil {
-		log.Println("ERROR: unable to get new access token", err)
+		slog.Error("unable to get new access token", "error", err)
 		openid = &OpenidToken{}
 	}
 	token = "Bearer " + openid.AccessToken
@@ -86,11 +87,11 @@ func getOpenidToken(token *OpenidToken, config configuration.Config) (err error)
 	})
 
 	if err != nil {
-		log.Println("ERROR: getOpenidToken::PostForm()", err)
+		slog.Error("ERROR: getOpenidToken::PostForm()", "error", err)
 		return err
 	}
 	if resp.StatusCode != http.StatusOK {
-		body, _ := ioutil.ReadAll(resp.Body)
+		body, _ := io.ReadAll(resp.Body)
 		err = errors.New(string(body))
 		resp.Body.Close()
 		return

@@ -19,13 +19,15 @@ package marshaller
 import (
 	"context"
 	"errors"
-	"github.com/SENERGY-Platform/marshaller/lib/marshaller/model"
-	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
-	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/devicerepo"
-	"log"
+	"fmt"
+	"log/slog"
 	"runtime/debug"
 	"sync"
 	"time"
+
+	"github.com/SENERGY-Platform/marshaller/lib/marshaller/model"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/devicerepo"
 )
 
 type ConceptRepo struct {
@@ -62,7 +64,7 @@ func NewConceptRepo(ctx context.Context, config configuration.Config, iot *devic
 	}()
 	err = result.Load()
 	if err != nil {
-		log.Println("ERROR:", err)
+		config.GetLogger().Error("unable to load concept repo", "error", err)
 		debug.PrintStack()
 		return result, err
 	}
@@ -70,7 +72,7 @@ func NewConceptRepo(ctx context.Context, config configuration.Config, iot *devic
 		for range ticker.C {
 			err = result.Load()
 			if err != nil {
-				log.Println("WARNING: unable to update concept repository", err)
+				config.GetLogger().Warn("unable to update concept repository", "error", err)
 			}
 		}
 	}()
@@ -156,7 +158,7 @@ func (this *ConceptRepo) GetRootCharacteristics(ids []string) (result []string) 
 func (this *ConceptRepo) registerFunction(f FunctionInfo) {
 	concept, ok := this.concepts[f.ConceptId]
 	if !ok {
-		log.Println("WARNING: unable to register function with unknown concept", f)
+		slog.Warn("unable to register function with unknown concept", "functionInfo", fmt.Sprintf("%+v", f))
 		return
 	}
 	this.characteristicsOfFunction[f.Id] = concept.CharacteristicIds
@@ -222,9 +224,9 @@ func (this *ConceptRepo) resetToDefault() {
 }
 
 func (this *ConceptRepo) register(concept model.Concept, characteristics []model.Characteristic) {
-	log.Println("load concept", concept.Name, concept.Id)
+	slog.Debug("load concept", "conceptName", concept.Name, "conceptId", concept.Id)
 	for _, characteristic := range characteristics {
-		log.Println("    load characteristic", characteristic.Name, characteristic.Id)
+		slog.Debug("load characteristic", "characteristicName", characteristic.Name, "characteristicId", characteristic.Id, "conceptName", concept.Name, "conceptId", concept.Id)
 		concept.CharacteristicIds = append(concept.CharacteristicIds, characteristic.Id)
 		this.characteristics[characteristic.Id] = characteristic
 		this.conceptByCharacteristic[characteristic.Id] = append(this.conceptByCharacteristic[characteristic.Id], concept)

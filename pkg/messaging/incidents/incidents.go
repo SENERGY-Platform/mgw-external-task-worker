@@ -17,11 +17,11 @@
 package incidents
 
 import (
+	"time"
+
 	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
 	paho "github.com/eclipse/paho.mqtt.golang"
-	"log"
-	"time"
 )
 
 func NewWithMqttClient(config configuration.Config, client paho.Client) (result *Incidents) {
@@ -35,7 +35,7 @@ func NewWithMqttClient(config configuration.Config, client paho.Client) (result 
 func New(config configuration.Config) (result *Incidents) {
 	retryInterval, err := time.ParseDuration(config.SyncConnectRetryInterval)
 	if err != nil {
-		log.Println("WARNING: unable to parse SyncConnectRetryInterval; use 1m instead")
+		config.GetLogger().Warn("unable to parse SyncConnectRetryInterval; use 1m instead", "error", err)
 		retryInterval = time.Minute
 	}
 	options := paho.NewClientOptions().
@@ -48,10 +48,10 @@ func New(config configuration.Config) (result *Incidents) {
 		SetConnectRetryInterval(retryInterval).
 		SetResumeSubs(true).
 		SetConnectionLostHandler(func(_ paho.Client, err error) {
-			log.Println("connection to sync mqtt broker lost")
+			config.GetLogger().Warn("connection to sync mqtt broker lost", "error", err)
 		}).
 		SetOnConnectHandler(func(m paho.Client) {
-			log.Println("connected to sync mqtt broker")
+			config.GetLogger().Info("(re)connected to sync mqtt broker")
 		})
 
 	client := paho.NewClient(options)

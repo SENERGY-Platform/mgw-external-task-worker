@@ -18,11 +18,11 @@ package messaging
 
 import (
 	"encoding/json"
+	"strings"
+
 	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
 	paho "github.com/eclipse/paho.mqtt.golang"
-	"log"
-	"strings"
 )
 
 type Consumer struct {
@@ -43,16 +43,16 @@ func (this *Consumer) start() error {
 		AddBroker(this.config.MqttBroker).
 		SetResumeSubs(true).
 		SetConnectionLostHandler(func(_ paho.Client, err error) {
-			log.Println("consumer connection to mqtt broker lost")
+			this.config.GetLogger().Warn("consumer connection to mqtt broker lost", "error", err)
 		}).
 		SetOnConnectHandler(func(m paho.Client) {
-			log.Println("consumer connected to mqtt broker")
+			this.config.GetLogger().Info("consumer (re)connected to mqtt broker")
 			this.subscribe()
 		})
 
 	this.mqtt = paho.NewClient(options)
 	if token := this.mqtt.Connect(); token.Wait() && token.Error() != nil {
-		log.Println("Error on MqttStart.Connect(): ", token.Error())
+		this.config.GetLogger().Error("unable to connect to mqtt broker", "error", token.Error())
 		return token.Error()
 	}
 
@@ -64,19 +64,19 @@ func (this *Consumer) subscribe() {
 		msg := Command{}
 		err := json.Unmarshal(message.Payload(), &msg)
 		if err != nil {
-			log.Println("ERROR: unable to unmarshal response to mgw command wrapper", err)
+			this.config.GetLogger().Error("unable to unmarshal response to mgw command wrapper", "error", err)
 			return
 		}
 		if strings.HasPrefix(msg.CommandId, this.config.CorrelationIdPrefix) {
 			convertedMsg, err := this.convertMessage(msg)
 			if err != nil {
-				log.Println("ERROR: unable to convert response", err)
+				this.config.GetLogger().Error("unable to convert response", "error", err)
 				return
 			}
 			go func() {
 				err = this.listener(convertedMsg)
 				if err != nil {
-					log.Println("ERROR: unable to handle response", err)
+					this.config.GetLogger().Error("unable to handle response", "error", err)
 					return
 				}
 			}()

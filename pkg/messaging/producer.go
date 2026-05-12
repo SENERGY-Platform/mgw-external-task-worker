@@ -44,10 +44,10 @@ func (this *Producer) start() error {
 		AddBroker(this.config.MqttBroker).
 		SetResumeSubs(true).
 		SetConnectionLostHandler(func(_ paho.Client, err error) {
-			log.Println("producer to mqtt broker lost connection")
+			this.config.GetLogger().Warn("producer connection to mqtt broker lost", "error", err)
 		}).
 		SetOnConnectHandler(func(m paho.Client) {
-			log.Println("producer connected to mqtt broker")
+			this.config.GetLogger().Info("producer (re)connected to mqtt broker")
 		})
 
 	this.mqtt = paho.NewClient(options)
@@ -59,7 +59,7 @@ func (this *Producer) start() error {
 	}
 
 	if token := this.mqtt.Connect(); token.Wait() && token.Error() != nil {
-		log.Println("Error on MqttStart.Connect(): ", token.Error())
+		this.config.GetLogger().Error("unable to connect to mqtt broker", "error", token.Error())
 		return token.Error()
 	}
 	return nil
@@ -77,7 +77,7 @@ func (this *Producer) Produce(topic string, message string) (err error) {
 		}
 		err = token.Error()
 		if err != nil {
-			log.Println("ERROR: unable to publish on mgw-mqtt:", err)
+			this.config.GetLogger().Error("unable to publish on mgw-mqtt", "error", err)
 		}
 		return err
 	}

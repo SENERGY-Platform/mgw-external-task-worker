@@ -20,6 +20,10 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"log/slog"
+	"runtime/debug"
+
 	converterService "github.com/SENERGY-Platform/converter/lib/converter"
 	"github.com/SENERGY-Platform/external-task-worker/lib/devicerepository/model"
 	"github.com/SENERGY-Platform/external-task-worker/lib/marshaller"
@@ -31,8 +35,6 @@ import (
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/devicerepo"
 	"github.com/SENERGY-Platform/models/go/models"
-	"log"
-	"runtime/debug"
 )
 
 type Factory struct {
@@ -139,7 +141,7 @@ func (this *Marshaller) UnmarshalV2(request marshaller.UnmarshallingV2Request) (
 	if request.Path == "" {
 		paths := this.v2.GetOutputPaths(request.Service, request.FunctionId, aspect)
 		if len(paths) > 1 {
-			log.Println("WARNING: only first path found by FunctionId and AspectNode is used for Unmarshal:", paths)
+			slog.Warn("only first path found by FunctionId and AspectNode is used for Unmarshal", "paths", fmt.Sprintf("%#v", paths))
 		}
 		if len(paths) == 0 {
 			return result, errors.New("no output path found for criteria")

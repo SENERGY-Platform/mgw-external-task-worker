@@ -19,12 +19,13 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg"
-	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
 	"log"
 	"os"
 	"os/signal"
 	"time"
+
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg"
+	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
 
 	"syscall"
 )
@@ -38,7 +39,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Println("wait for cluster routing")
+	config.GetLogger().Info("wait for cluster routing")
 	time.Sleep(10 * time.Second)
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -47,10 +48,10 @@ func main() {
 		shutdown := make(chan os.Signal, 1)
 		signal.Notify(shutdown, syscall.SIGINT, syscall.SIGTERM, syscall.SIGKILL)
 		sig := <-shutdown
-		log.Println("received shutdown signal", sig)
+		config.GetLogger().Info("received shutdown signal", "signal", sig)
 		cancel()
 	}()
 
 	pkg.Start(ctx, config)
-	log.Println("worker stopped")
+	config.GetLogger().Info("worker stopped")
 }

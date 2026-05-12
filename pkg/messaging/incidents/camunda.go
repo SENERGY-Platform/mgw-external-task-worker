@@ -19,13 +19,13 @@ package incidents
 import (
 	"encoding/json"
 	"errors"
-	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
-	"io/ioutil"
-	"log"
+	"io"
 	"net/http"
 	"net/url"
 	"runtime/debug"
 	"time"
+
+	"github.com/SENERGY-Platform/external-task-worker/lib/messages"
 )
 
 func (this *Incidents) stopProcessInCamunda(command messages.KafkaIncidentsCommand) (deploymentName string, err error) {
@@ -36,7 +36,7 @@ func (this *Incidents) stopProcessInCamunda(command messages.KafkaIncidentsComma
 	}
 	name, err := this.getProcessName(incident.ProcessDefinitionId)
 	if err != nil {
-		log.Println("WARNING: unable to get process name", err)
+		this.config.GetLogger().Warn("unable to get process name", "error", err)
 		return incident.ProcessDefinitionId, nil
 	} else {
 		return name, nil
@@ -61,7 +61,7 @@ func (this *Incidents) stopProcessInstance(id string) (err error) {
 	if resp.StatusCode == 200 || resp.StatusCode == 204 {
 		return nil
 	}
-	msg, _ := ioutil.ReadAll(resp.Body)
+	msg, _ := io.ReadAll(resp.Body)
 	err = errors.New("error on delete in engine for " + shard + "/engine-rest/process-instance/" + url.PathEscape(id) + ": " + resp.Status + " " + string(msg))
 	return err
 }
@@ -79,8 +79,8 @@ func (this *Incidents) getProcessName(id string) (name string, err error) {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != 200 {
-		temp, _ := ioutil.ReadAll(resp.Body)
-		log.Println("ERROR:", resp.Status, string(temp))
+		temp, _ := io.ReadAll(resp.Body)
+		this.config.GetLogger().Error("unexpected status code in getProcessName()", "statusCode", resp.Status, "error", string(temp))
 		debug.PrintStack()
 		return "", errors.New("unexpected response")
 	}

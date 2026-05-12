@@ -20,7 +20,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"runtime/debug"
@@ -113,7 +112,7 @@ func (this *Iot) GetDevice(_ devicerepository.Impersonate, id string) (result mo
 func (this *Iot) GetService(token devicerepository.Impersonate, device model.Device, serviceId string) (result model.Service, err error) {
 	dt, err := this.GetDeviceType(token, device.DeviceTypeId)
 	if err != nil {
-		log.Println("ERROR: unable to load device-type", device.DeviceTypeId)
+		this.config.GetLogger().Error("unable to load device-type", "deviceTypeId", device.DeviceTypeId, "error", err)
 		return result, err
 	}
 	for _, service := range dt.Services {
@@ -121,7 +120,7 @@ func (this *Iot) GetService(token devicerepository.Impersonate, device model.Dev
 			return service, nil
 		}
 	}
-	log.Println("ERROR: unable to find service in device-type", device.DeviceTypeId, serviceId)
+	this.config.GetLogger().Error("unable to find service in device-type", "deviceTypeId", device.DeviceTypeId, "serviceId", serviceId, "error", "service not found")
 	return result, errors.New("service not found")
 }
 
@@ -350,7 +349,7 @@ func (this *Iot) getConceptIds() (ids []string, err error) {
 			SortBy: "name.asc",
 		})
 		if err != nil {
-			log.Println("ERROR: getConceptIds()", err)
+			this.config.GetLogger().Error("unable to list concepts", "error", err)
 			return ids, err
 		}
 		for _, wrapper := range temp {
@@ -465,7 +464,7 @@ func (this *Iot) GetJson(token string, endpoint string, result interface{}) (err
 	}
 	err = json.NewDecoder(resp.Body).Decode(result)
 	if err != nil {
-		log.Println("ERROR:", err.Error())
+		this.config.GetLogger().Error("unable to decode json", "error", err)
 		debug.PrintStack()
 	}
 	return
