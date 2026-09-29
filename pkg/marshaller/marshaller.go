@@ -34,7 +34,6 @@ import (
 	marshaller_service_v2 "github.com/SENERGY-Platform/marshaller/lib/marshaller/v2"
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/configuration"
 	"github.com/SENERGY-Platform/mgw-external-task-worker/pkg/devicerepo"
-	"github.com/SENERGY-Platform/models/go/models"
 )
 
 type Factory struct {
@@ -69,12 +68,14 @@ func NewMarshaller(ctx context.Context, conf configuration.Config, iot *devicere
 	return &Marshaller{
 		marshaller: marshaller_service.New(converter, conceptrepo, marshallerIot),
 		v2:         marshaller_service_v2.New(config.Config{}, converter, conceptrepo),
+		aspects:    marshallerIot,
 	}, nil
 }
 
 type Marshaller struct {
 	marshaller *marshaller_service.Marshaller
 	v2         *marshaller_service_v2.Marshaller
+	aspects    marshaller_service_v2.DeviceRepository
 }
 
 func (this *Marshaller) MarshalFromServiceAndProtocol(characteristicId string, service model.Service, protocol model.Protocol, characteristicData interface{}, configurables []marshaller.Configurable) (result map[string]string, err error) {
@@ -134,14 +135,18 @@ func (this *Marshaller) MarshalV2(service model.Service, protocol model.Protocol
 }
 
 func (this *Marshaller) UnmarshalV2(request marshaller.UnmarshallingV2Request) (result interface{}, err error) {
-	var aspect *models.AspectNode
-	if request.AspectNode.Id != "" {
-		aspect = &request.AspectNode
-	}
 	if request.Path == "" {
-		paths := this.v2.GetOutputPaths(request.Service, request.FunctionId, aspect)
+		aspects, err := this.requestAspectNodes(request)
+		if err != nil {
+			return result, err
+		}
+		paths := this.v2.GetOutputPaths(request.Service, request.FunctionId, aspects)
 		if len(paths) > 1 {
-			slog.Warn("only first path found by FunctionId and AspectNode is used for Unmarshal", "paths", fmt.Sprintf("%#v", paths))
+			paths, err = this.v2.SortPathsByAspectDistance(this.aspects, request.Service, aspects, paths)
+			if err != nil {
+				return result, err
+			}
+			slog.Warn("only the path closest to the AspectNodes is used for Unmarshal", "paths", fmt.Sprintf("%#v", paths))
 		}
 		if len(paths) == 0 {
 			return result, errors.New("no output path found for criteria")
@@ -149,4 +154,22 @@ func (this *Marshaller) UnmarshalV2(request marshaller.UnmarshallingV2Request) (
 		request.Path = paths[0]
 	}
 	return this.v2.Unmarshal(request.Protocol, request.Service, request.CharacteristicId, request.Path, request.Message, nil)
+}
+
+// requestAspectNodes collects the aspect nodes a request asks for and resolves the aspect ids
+// among them, the way the marshaller service does it. The deprecated AspectNode and
+// AspectNodeId are aliases for a list with one element, folded in by the request itself.
+func (this *Marshaller) requestAspectNodes(request marshaller.UnmarshallingV2Request) (result []marshaller_service_model.AspectNode, err error) {
+	result = request.GetAspectNodes()
+	for _, aspectNodeId := range request.GetAspectNodeIds() {
+		if aspectNodeId == "" || marshaller_service_model.ContainsAspectNode(result, aspectNodeId) {
+			continue
+		}
+		aspectNode, err := this.aspects.GetAspectNode(aspectNodeId)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, aspectNode)
+	}
+	return result, nil
 }
