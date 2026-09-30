@@ -189,7 +189,7 @@ func (this *Iot) getDevice(id string) (result model.Device, err error) {
 		return result, err
 	}
 	if resp.StatusCode == http.StatusNotFound {
-		return result, errors.New("device-type not found")
+		return result, errors.New("device not found")
 	}
 	if resp.StatusCode >= 300 {
 		return result, errors.New("unexpected status code")
@@ -221,7 +221,7 @@ func (this *Iot) getProtocol(id string) (result model.Protocol, err error) {
 		return result, err
 	}
 	if resp.StatusCode == http.StatusNotFound {
-		return result, errors.New("device-type not found")
+		return result, errors.New("protocol not found")
 	}
 	if resp.StatusCode >= 300 {
 		return result, errors.New("unexpected status code")
@@ -285,7 +285,7 @@ func (this *Iot) getDeviceGroup(id string) (result model.DeviceGroup, err error)
 		return result, err
 	}
 	if resp.StatusCode == http.StatusNotFound {
-		return result, errors.New("device-type not found")
+		return result, errors.New("device-group not found")
 	}
 	if resp.StatusCode >= 300 {
 		return result, errors.New("unexpected status code")
