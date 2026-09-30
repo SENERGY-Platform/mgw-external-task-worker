@@ -67,6 +67,7 @@ func TestOfflineIncident(t *testing.T) {
 	}
 
 	config.CompletionStrategy = util.PESSIMISTIC
+	config.IncidentRetries = 0
 
 	repo, fallbackfile, err := mocks.NewFallbackFile(ctx, &wg)
 	if err != nil {

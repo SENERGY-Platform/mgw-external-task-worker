@@ -17,6 +17,8 @@
 package camunda
 
 import (
+	"time"
+
 	"github.com/SENERGY-Platform/external-task-worker/lib/camunda"
 	"github.com/SENERGY-Platform/external-task-worker/lib/camunda/interfaces"
 	"github.com/SENERGY-Platform/external-task-worker/lib/com"
@@ -39,5 +41,9 @@ func (this Shards) GetShardForUser(_ string) (shardUrl string, err error) {
 }
 
 func (this Factory) Get(config util.Config, producer com.ProducerInterface, metrics interfaces.Metrics) (interfaces.CamundaInterface, error) {
-	return camunda.NewCamundaWithShards(config, producer, metrics, Shards(this.Config.CamundaUrl))
+	result, err := camunda.NewCamundaWithShards(config, producer, metrics, Shards(this.Config.CamundaUrl))
+	if err != nil || this.Config.IncidentRetries <= 0 {
+		return result, err
+	}
+	return NewRetryBeforeIncident(result, this.Config.IncidentRetries, time.Duration(this.Config.CamundaFetchLockDuration)*time.Millisecond, this.Config.GetLogger()), nil
 }

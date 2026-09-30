@@ -39,6 +39,7 @@ type Config struct {
 	CamundaTopic                    string `json:"camunda_topic"`
 	CamundaTaskResultName           string `json:"camunda_task_result_name"`
 	CamundaLongPollTimeout          int64  `json:"camunda_long_poll_timeout"`
+	IncidentRetries                 int64  `json:"incident_retries"`
 
 	TimescaleWrapperUrl string `json:"timescale_wrapper_url"`
 

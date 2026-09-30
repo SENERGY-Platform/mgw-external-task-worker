@@ -39,6 +39,15 @@ import (
 )
 
 func TestIncident(t *testing.T) {
+	testIncident(t, 0, 1)
+}
+
+func TestIncidentAfterExhaustedRetries(t *testing.T) {
+	testIncident(t, 3, 4)
+}
+
+// testIncident delivers the same failing task deliveries times and expects exactly one incident
+func testIncident(t *testing.T, retries int64, deliveries int) {
 	t.Log("TEST-NOTICE: error messages like \n\tERROR: getOpenidToken::PostForm() Post \"/auth/realms/master/protocol/openid-connect/token\": unsupported protocol scheme \"\" \nare expected in this test")
 	wg := sync.WaitGroup{}
 	defer wg.Wait()
@@ -67,6 +76,7 @@ func TestIncident(t *testing.T) {
 	}
 
 	config.CompletionStrategy = util.PESSIMISTIC
+	config.IncidentRetries = retries
 
 	repo, fallbackfile, err := mocks.NewFallbackFile(ctx, &wg)
 	if err != nil {
@@ -191,8 +201,9 @@ func TestIncident(t *testing.T) {
 		return
 	}
 
-	fetchRespnses := []interface{}{
-		[]messages.CamundaExternalTask{
+	fetchRespnses := []interface{}{}
+	for range deliveries {
+		fetchRespnses = append(fetchRespnses, []messages.CamundaExternalTask{
 			{
 				Id:                  "test-task-id-1",
 				ProcessDefinitionId: "test-definition-id",
@@ -204,7 +215,7 @@ func TestIncident(t *testing.T) {
 					},
 				},
 			},
-		},
+		})
 	}
 
 	camundamock := mocks.NewCamundaMock(ctx, fetchRespnses)
