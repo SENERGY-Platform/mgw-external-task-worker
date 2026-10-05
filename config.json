@@ -30,10 +30,7 @@
     "sequential_groups":true,
     "mqtt_response_topic": "response/#",
     "correlation_id_prefix": "pessimistic-local-task-",
-    "fallback_file": "devicerepo_fallback.json",
     "protocol_segment": "data",
 
-    "mgw_concept_repo_refresh_interval": 3600,
-
-    "async_cache_refresh": false
+    "mgw_concept_repo_refresh_interval": 3600
 }

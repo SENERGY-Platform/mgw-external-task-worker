@@ -57,7 +57,6 @@ type Config struct {
 	MqttResponseTopic   string `json:"mqtt_response_topic"`
 	CorrelationIdPrefix string `json:"correlation_id_prefix"`
 	DeviceRepoUrl       string `json:"device_repo_url"`
-	FallbackFile        string `json:"fallback_file"`
 
 	ProtocolSegment string `json:"protocol_segment"`
 
@@ -67,8 +66,6 @@ type Config struct {
 	SyncMqttBroker           string `json:"sync_mqtt_broker"`
 	SyncNetworkId            string `json:"sync_network_id"`
 	SyncConnectRetryInterval string `json:"sync_connect_retry_interval"`
-
-	AsyncCacheRefresh bool `json:"async_cache_refresh"`
 
 	LogLevel string       `json:"log_level"`
 	logger   *slog.Logger `json:"-"`

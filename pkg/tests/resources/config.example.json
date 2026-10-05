@@ -21,6 +21,5 @@
     "sub_result_expiration_in_seconds":6000,
     "sequential_groups":false,
     "mqtt_response_topic": "response/#",
-    "correlation_id_prefix": "pessimistic-local-task-",
-    "fallback_file": "/tmp/devicerepo_fallback.json"
+    "correlation_id_prefix": "pessimistic-local-task-"
 }

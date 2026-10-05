@@ -78,12 +78,8 @@ func testIncident(t *testing.T, retries int64, deliveries int) {
 	config.CompletionStrategy = util.PESSIMISTIC
 	config.IncidentRetries = retries
 
-	repo, fallbackfile, err := mocks.NewFallbackFile(ctx, &wg)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	config.FallbackFile = fallbackfile
+	repo := mocks.NewDeviceRepo(ctx, &wg)
+	config.DeviceRepoUrl = repo.Url()
 
 	err = repo.RegisterDefaults()
 	if err != nil {

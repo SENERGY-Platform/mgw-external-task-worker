@@ -157,11 +157,8 @@ func startMultiAspectWorker(t *testing.T, ctx context.Context, wg *sync.WaitGrou
 	}
 	config.CompletionStrategy = util.PESSIMISTIC
 
-	repo, fallbackfile, err := mocks.NewFallbackFile(ctx, wg)
-	if err != nil {
-		t.Fatal(err)
-	}
-	config.FallbackFile = fallbackfile
+	repo := mocks.NewDeviceRepo(ctx, wg)
+	config.DeviceRepoUrl = repo.Url()
 	err = repo.RegisterDefaults()
 	if err != nil {
 		t.Fatal(err)

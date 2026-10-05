@@ -78,12 +78,8 @@ func TestCommand(t *testing.T) {
 	config.CompletionStrategy = util.PESSIMISTIC
 	//config.SequentialGroups = false
 
-	repo, fallbackfile, err := mocks.NewFallbackFile(ctx, &wg)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	config.FallbackFile = fallbackfile
+	repo := mocks.NewDeviceRepo(ctx, &wg)
+	config.DeviceRepoUrl = repo.Url()
 
 	err = repo.RegisterDefaults()
 	if err != nil {
