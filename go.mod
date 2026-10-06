@@ -7,7 +7,7 @@ require (
 	github.com/SENERGY-Platform/device-repository/v2 v2.2.2
 	github.com/SENERGY-Platform/external-task-worker v0.1.1
 	github.com/SENERGY-Platform/go-service-base/struct-logger v0.8.0
-	github.com/SENERGY-Platform/marshaller v0.2.0
+	github.com/SENERGY-Platform/marshaller v0.3.0
 	github.com/SENERGY-Platform/models/go v0.0.0-20260911075423-f01521c01da2
 	github.com/SENERGY-Platform/service-commons v0.0.0-20260821114734-3e4578ac2358
 	github.com/eclipse/paho.mqtt.golang v1.4.3
